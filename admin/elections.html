@@ -141,6 +141,12 @@
 									</li>
 								</ul>
 							</div>
+							<li class="nav-item">
+								<a href="students.html">
+									<i class="fas fa-id-card"></i>
+									<p>Students</p>
+								</a>
+							</li>
 						</li>
 					</ul>
 				</div>
@@ -194,15 +200,38 @@
 																</select>
 															</div>
 															<div class="form-group">
-																<label>Input DateTime Picker</label>
+																<label>Select Date</label>
 																<div class="input-group">
-																	<input type="text" class="form-control" id="datetime" name="datetime">
+																	<input type="text" class="form-control" id="datepicker" name="datepicker">
 																	<div class="input-group-append">
 																		<span class="input-group-text">
-																			<i class="fa fa-calendar"></i>
+																			<i class="fa fa-calendar-check"></i>
 																		</span>
 																	</div>
 																</div>
+															</div>
+															<div class="form-group">
+																<label>Starting From</label>
+																<div class="input-group">
+																	<input type="text" class="form-control" id="timepicker1" name="timepicker">
+																	<div class="input-group-append">
+																		<span class="input-group-text">
+																			<i class="fa fa-clock"></i>
+																		</span>
+																	</div>
+																</div>
+															</div>
+															<div class="form-group">
+																<label>Ending On</label>
+																<div class="input-group">
+																	<input type="text" class="form-control" id="timepicker2" name="timepicker">
+																	<div class="input-group-append">
+																		<span class="input-group-text">
+																			<i class="fa fa-clock"></i>
+																		</span>
+																	</div>
+																</div>
+															</div>
 															</div>
 														</div>
 													</div>
@@ -223,7 +252,8 @@
 												<th>No.</th>
 												<th>Position</th>
 												<th>Date</th>
-												<th>Time</th>
+												<th>Starting Time</th>
+												<th>Ending Time</th>
 												<th style="width: 10%">Action</th>
 											</tr>
 										</thead>
@@ -232,7 +262,8 @@
 												<td>01</td>
 												<td>General Secretary</td>
 												<td>11/26/2020</td>
-												<td>13:20</td>
+												<td>10:30</td>
+												<td>16:30</td>
 												<td>
 													<div class="form-button-action">
 														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit">
@@ -248,7 +279,8 @@
 												<td>02</td>
 												<td>Secretary</td>
 												<td>11/26/2020</td>
-												<td>13:20</td>
+												<td>10:30</td>
+												<td>16:30</td>
 												<td>
 													<div class="form-button-action">
 														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit">
@@ -264,7 +296,8 @@
 												<td>03</td>
 												<td>Class Representative</td>
 												<td>11/26/2020</td>
-												<td>13:20</td>
+												<td>10:30</td>
+												<td>16:30</td>
 												<td>
 													<div class="form-button-action">
 														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit">
@@ -313,9 +346,15 @@
 <!-- Azzara JS -->
 <script src="../assets/js/ready.min.js"></script>
 <script >
-	$('#datetime').datetimepicker({
-			format: 'MM/DD/YYYY H:mm',
-		});
+	$('#datepicker').datetimepicker({
+			format: 'MM/DD/YYYY',
+	});
+	$('#timepicker1').datetimepicker({
+		format: 'h:mm A', 
+	});
+	$('#timepicker2').datetimepicker({
+		format: 'h:mm A', 
+	});
 
 	$(document).ready(function() {
 
