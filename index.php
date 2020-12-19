@@ -13,7 +13,7 @@
 	}
 	else if ($_SESSION['userType'] == "student") {
 		
-		echo "student";
+		header("Location:Student/index.php");
 			
 	}
 	else {

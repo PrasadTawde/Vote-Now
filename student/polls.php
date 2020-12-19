@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<title>Home</title>
+	<title>Polls</title>
 	<meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
 	<!-- <link rel="icon" href="http://demo.themekita.com/azzara/livepreview/assets/img/icon.ico" type="image/x-icon"/> -->
 
@@ -74,7 +74,7 @@
 									<div class="dropdown-divider"></div>
 									<a class="dropdown-item" href="#">My Profile</a>
 									<div class="dropdown-divider"></div>
-									<a class="dropdown-item" href="../login/logout.php">Logout</a>
+									<a class="dropdown-item" href="#">Logout</a>
 								</li>
 							</ul>
 						</li>
@@ -91,8 +91,8 @@
 			<div class="sidebar-wrapper scrollbar-inner">
 				<div class="sidebar-content">
 					<ul class="nav">
-						<li class="nav-item active">
-							<a href="">
+						<li class="nav-item">
+							<a href="index.php">
 								<i class="fas fa-home"></i>
 								<p>Dashboard</p>
 							</a>
@@ -115,8 +115,8 @@
 								<p>Elections</p>
 							</a>
 						</li>
-						<li class="nav-item">
-							<a href="polls.php">
+						<li class="nav-item active">
+							<a href="">
 								<i class="fas fa-check"></i>
 								<p>Polls</p>
 							</a>
@@ -157,82 +157,85 @@
 		<div class="main-panel">
 			<div class="content">
 				<div class="page-inner">
-					<div class="page-header">
-						<h4 class="page-title">Home</h4>
+					<h4 class="page-title">Polls</h4>
+					<div class="col-md-12">
+						<div class="card">
+							<div class="card-body">
+								<div class="table-responsive">
+									<table id="add-row" class="display table table-striped table-hover" >
+										<thead>
+											<tr>
+												<th>Position Name</th>
+												<th>Department Name</th>
+												<th>Program Name</th>
+												<th style="width: 10%">Action</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>General Secretary</td>
+												<td>--</td>
+												<td>--</td>
+												<td>
+													<div class="form-button-action">
+														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="View Results">
+															<i class="far fa-check-square"></i>
+														</button>
+													</div>
+												</td>
+											</tr>
+											<tr>
+												<td>Secretary</td>
+												<td>--</td>
+												<td>--</td>
+												<td>
+													<div class="form-button-action">
+														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="View Results">
+															<i class="far fa-check-square"></i>
+														</button>
+													</div>
+												</td>
+											</tr>
+											<tr>
+												<td>Class Representative</td>
+												<td>Goa Bussiness School</td>
+												<td>MCA</td>
+												<td>
+													<div class="form-button-action">
+														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="View Results">
+															<i class="far fa-check-square"></i>
+														</button>
+													</div>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
 					</div>
+					<!-- charts -->
 					<div class="row">
-						<div class="col-sm-6 col-md-3">
-							<div class="card card-stats card-round">
-								<div class="card-body ">
-									<div class="row align-items-center">
-										<div class="col-icon">
-											<div class="icon-big text-center icon-primary bubble-shadow-small">
-												<i class="fas fa-school"></i>
-											</div>
-										</div>
-										<div class="col col-stats ml-3 ml-sm-0">
-											<div class="numbers">
-												<p class="card-category">Departments</p>
-												<h4 class="card-title">14</h4>
-											</div>
-										</div>
+						<div class="col-md-6">
+							<div class="card">
+								<div class="card-header">
+									<div class="card-title">Bar Chart</div>
+								</div>
+								<div class="card-body">
+									<div class="chart-container">
+										<canvas id="barChart"></canvas>
 									</div>
 								</div>
 							</div>
 						</div>
-						<div class="col-sm-6 col-md-3">
-							<div class="card card-stats card-round">
-								<div class="card-body">
-									<div class="row align-items-center">
-										<div class="col-icon">
-											<div class="icon-big text-center icon-info bubble-shadow-small">
-												<i class="far fas fa-user-graduate"></i>
-											</div>
-										</div>
-										<div class="col col-stats ml-3 ml-sm-0">
-											<div class="numbers">
-												<p class="card-category">Programs</p>
-												<h4 class="card-title">103</h4>
-											</div>
-										</div>
-									</div>
+						<div class="col-md-6">
+							<div class="card">
+								<div class="card-header">
+									<div class="card-title">Pie Chart</div>
 								</div>
-							</div>
-						</div>
-						<div class="col-sm-6 col-md-3">
-							<div class="card card-stats card-round">
 								<div class="card-body">
-									<div class="row align-items-center">
-										<div class="col-icon">
-											<div class="icon-big text-center icon-success bubble-shadow-small">
-												<i class="far fas fa-clock"></i>
-											</div>
-										</div>
-										<div class="col col-stats ml-3 ml-sm-0">
-											<div class="numbers">
-												<p class="card-category">Active Elections</p>
-												<h4 class="card-title">5</h4>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="col-sm-6 col-md-3">
-							<div class="card card-stats card-round">
-								<div class="card-body">
-									<div class="row align-items-center">
-										<div class="col-icon">
-											<div class="icon-big text-center icon-secondary bubble-shadow-small">
-												<i class="far fas fa-calendar-alt"></i>
-											</div>
-										</div>
-										<div class="col col-stats ml-3 ml-sm-0">
-											<div class="numbers">
-												<p class="card-category">Upcoming Elections</p>
-												<h4 class="card-title">6</h4>
-											</div>
-										</div>
+									<div class="chart-container">
+										<canvas id="pieChart" style="width: 50%; height: 50%"></canvas>
 									</div>
 								</div>
 							</div>
@@ -260,21 +263,6 @@
 <!-- Datatables -->
 <script src="../assets/js/plugin/datatables/datatables.min.js"></script>
 
-<!-- jQuery Vector Maps -->
-<script src="../assets/js/plugin/jqvmap/jquery.vmap.min.js"></script>
-<script src="../assets/js/plugin/jqvmap/maps/jquery.vmap.world.js"></script>
-
-<!-- Google Maps Plugin -->
-<script src="../assets/js/plugin/gmaps/gmaps.js"></script>
-
-<!-- Dropzone -->
-<script src="../assets/js/plugin/dropzone/dropzone.min.js"></script>
-
-<!-- Fullcalendar -->
-<script src="../assets/js/plugin/fullcalendar/fullcalendar.min.js"></script>
-
-<!-- DateTimePicker -->
-<script src="../assets/js/plugin/datepicker/bootstrap-datetimepicker.min.js"></script>
 
 <!-- Bootstrap Tagsinput -->
 <script src="../assets/js/plugin/bootstrap-tagsinput/bootstrap-tagsinput.min.js"></script>
@@ -285,8 +273,7 @@
 <!-- jQuery Validation -->
 <script src="../assets/js/plugin/jquery.validate/jquery.validate.min.js"></script>
 
-<!-- Summernote -->
-<script src="../assets/js/plugin/summernote/summernote-bs4.min.js"></script>
+<script src="../assets/js/plugin/chart.js/chart.min.js"></script>
 
 <!-- Select2 -->
 <script src="../assets/js/plugin/select2/select2.full.min.js"></script>
@@ -296,6 +283,73 @@
 
 <!-- Azzara JS -->
 <script src="../assets/js/ready.min.js"></script>
+<script>
+	$('#add-row').DataTable({
+			"pageLength": 5,
+		});
+	var myBarChart = new Chart(barChart, {
+		type: 'bar',
+		data: {
+			labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+			datasets : [{
+				label: "Sales",
+				backgroundColor: 'rgb(23, 125, 255)',
+				borderColor: 'rgb(23, 125, 255)',
+				data: [3, 2, 9, 5, 4, 6, 4, 6, 7, 8, 7, 4],
+			}],
+		},
+		options: {
+			responsive: true, 
+			maintainAspectRatio: false,
+			scales: {
+				yAxes: [{
+					ticks: {
+						beginAtZero:true
+					}
+				}]
+			},
+		}
+	});
 
+	var myPieChart = new Chart(pieChart, {
+		type: 'pie',
+		data: {
+			datasets: [{
+				data: [50, 35, 15],
+				backgroundColor :["#1d7af3","#f3545d","#fdaf4b"],
+				borderWidth: 0
+			}],
+			labels: ['New Visitors', 'Subscribers', 'Active Users'] 
+		},
+		options : {
+			responsive: true, 
+			maintainAspectRatio: false,
+			legend: {
+				position : 'bottom',
+				labels : {
+					fontColor: 'rgb(154, 154, 154)',
+					fontSize: 11,
+					usePointStyle : true,
+					padding: 20
+				}
+			},
+			pieceLabel: {
+				render: 'percentage',
+				fontColor: 'white',
+				fontSize: 14,
+			},
+			tooltips: false,
+			layout: {
+				padding: {
+					left: 20,
+					right: 20,
+					top: 20,
+					bottom: 20
+				}
+			}
+		}
+	});
+
+</script>
 </body>
 </html>

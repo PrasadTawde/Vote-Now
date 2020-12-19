@@ -64,7 +64,31 @@
 			}
 			else if ($user_type == 'student') 
 			{
-				echo "student";
+				$query = "SELECT * FROM STUDENTS WHERE STUDENT_EMAIL = :useremail";
+
+				$stmt = $dbh->prepare($query);
+				$stmt->execute(array(':useremail' => $useremail));
+
+				$row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+				if ($row['STUDENT_ID'] > 0)
+				{
+					//if(password_verify($password, $row['USER_PASSWORD']))
+					if($password== $row['STUDENT_PASSWORD'])
+					{
+						func::createRecord($dbh, $row['STUDENT_EMAIL'], $row['STUDENT_ID'], 'student');
+						// header("location:../index.php");
+						$report["success"]="You are Logged in successfully";
+					}
+					else
+					{
+						$report["error_password"]="Wrong Password for ".$useremail;
+					}			
+				}
+				else
+				{
+					$report["error_span"]="User Does not exist";
+				}
 			}
 		} 
 		else 

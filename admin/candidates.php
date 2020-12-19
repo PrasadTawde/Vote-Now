@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<title>Programs</title>
+	<title>Candidates</title>
 	<meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
 	<!-- <link rel="icon" href="http://demo.themekita.com/azzara/livepreview/assets/img/icon.ico" type="image/x-icon"/> -->
 
@@ -31,7 +31,7 @@
 			<!-- Logo Header -->
 			<div class="logo-header">
 				
-				<a href="index.html" class="logo">
+				<a href="index.php" class="logo">
 					<!-- <img src="http://demo.themekita.com/azzara/livepreview/assets/img/logoazzara.svg" alt="navbar brand" class="navbar-brand"> -->
 				</a>
 				<p class="h2 text-white">Vote Now</p>
@@ -92,57 +92,57 @@
 				<div class="sidebar-content">
 					<ul class="nav">
 						<li class="nav-item">
-							<a href="home.html">
+							<a href="index.php">
 								<i class="fas fa-home"></i>
 								<p>Dashboard</p>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="positions.html">
+							<a href="positions.php">
 								<i class="fas fas fa-user-tie"></i>
 								<p>Manage Positions</p>
 							</a>
 						</li>
-						<li class="nav-item">
-							<a href="candidates.html">
+						<li class="nav-item active">
+							<a href="">
 								<i class="fas far fa-address-card"></i>
 								<p>Manage Candidates</p>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="elections.html">
+							<a href="elections.php">
 								<i class="fas fa-edit"></i>
 								<p>Elections</p>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="polls.html">
+							<a href="polls.php">
 								<i class="fas fa-check"></i>
 								<p>Polls</p>
 							</a>
 						</li>
-						<li class="nav-item active">
+						<li class="nav-item">
 							<a data-toggle="collapse" href="#dept">
 								<i class="fas fas fa-school"></i>
 								<p>Departments & Programs</p>
 								<span class="caret"></span>
 							</a>
-							<div class="collapse show" id="dept">
+							<div class="collapse" id="dept">
 								<ul class="nav nav-collapse">
 									<li>
-										<a href="departments.html">
+										<a href="departments.php">
 											<span class="sub-item">Departments</span>
 										</a>
 									</li>
-									<li class="active">
-										<a href="">
+									<li>
+										<a href="programs.php">
 											<span class="sub-item">Programs</span>
 										</a>
 									</li>
 								</ul>
 							</div>
 							<li class="nav-item">
-								<a href="students.html">
+								<a href="students.php">
 									<i class="fas fa-id-card"></i>
 									<p>Students</p>
 								</a>
@@ -158,16 +158,16 @@
 			<div class="content">
 				<div class="page-inner">
 					<div class="page-header">
-						<h4 class="page-title">Departments & Program</h4>
+						<h4 class="page-title">Candidates</h4>
 					</div>
-					<div class="col-md-12">
+					<div class="col-md-10 ml-auto mr-auto">
 						<div class="card">
 							<div class="card-header">
 								<div class="d-flex align-items-center">
-									<h4 class="card-title">Programs</h4>
+									<h4 class="page-title">Candidates</h4>
 									<button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#addRowModal">
 										<i class="fa fa-plus"></i>
-										Add New Programs
+										Add New Candidate
 									</button>
 								</div>
 							</div>
@@ -179,7 +179,7 @@
 											<div class="modal-header no-bd">
 												<h5 class="modal-title">
 													<span class="fw-mediumbold">
-														New	Programs
+														New	Candidate
 													</span>
 												</h5>
 												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -191,17 +191,35 @@
 													<div class="row">
 														<div class="col-sm-12">
 															<div class="form-group form-group-default">
+																<label>Name</label>
+																<input id="addName" type="text" class="form-control" placeholder="Enter Candidates name">
+															</div>
+															<div class="form-group form-group-default">
+																<label>Select Position</label>
+																<select class="form-control" id="formGroupDefaultSelect">
+																	<option selected="" disabled="">--</option>
+																	<option>General Secretary</option>
+																	<option>Secretary</option>
+																	<option>Class Representative</option>
+																</select>
+															</div>
+															<div class="form-group form-group-default">
 																<label>Select Department</label>
 																<select class="form-control" id="formGroupDefaultSelect">
 																	<option selected="" disabled="">--</option>
-																	<option>Goa Business School</option>
+																	<option>All</option>
+																	<option>Goa Bussiness School</option>
 																	<option>Philosophy</option>
 																	<option>Biotechnology</option>
 																</select>
 															</div>
 															<div class="form-group form-group-default">
-																<label>Name</label>
-																<input id="addName" type="text" class="form-control" placeholder="Enter department name">
+																<label>Select Programme</label>
+																<select class="form-control" id="formGroupDefaultSelect">
+																	<option selected="" disabled="">--</option>
+																	<option>All</option>
+																	<option>MCA</option>
+																</select>
 															</div>
 														</div>
 													</div>
@@ -219,23 +237,19 @@
 									<table id="add-row" class="display table table-striped table-hover" >
 										<thead>
 											<tr>
-												<th>Department Name</th>
-												<th>Program Name</th>
+												<th>Candidate Name</th>
+												<th>Position</th>
+												<th>Department</th>
+												<th>Programme</th>
 												<th style="width: 10%">Action</th>
 											</tr>
 										</thead>
-										<!-- <tfoot>
-											<tr>
-												<th>Name</th>
-												<th>Position</th>
-												<th>Office</th>
-												<th>Action</th>
-											</tr>
-										</tfoot> -->
 										<tbody>
 											<tr>
-												<td>Goa Business School</td>
-												<td>M.C.A</td>
+												<td>Barry Allen</td>
+												<td>General Secretary</td>
+												<td>--</td>
+												<td>--</td>
 												<td>
 													<div class="form-button-action">
 														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit">
@@ -248,8 +262,10 @@
 												</td>
 											</tr>
 											<tr>
-												<td>Goa Business School</td>
-												<td>M.B.A</td>
+												<td>Joey J</td>
+												<td>Secretary</td>
+												<td>--</td>
+												<td>--</td>
 												<td>
 													<div class="form-button-action">
 														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit">
@@ -262,36 +278,10 @@
 												</td>
 											</tr>
 											<tr>
-												<td>Goa Business School</td>
-												<td>M.Com</td>
-												<td>
-													<div class="form-button-action">
-														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit">
-															<i class="fa fa-edit"></i>
-														</button>
-														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Delete">
-															<i class="fa fa-times"></i>
-														</button>
-													</div>
-												</td>
-											</tr>
-											<tr>
-												<td>Philosophy</td>
-												<td>Philosophy</td>
-												<td>
-													<div class="form-button-action">
-														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit">
-															<i class="fa fa-edit"></i>
-														</button>
-														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Delete">
-															<i class="fa fa-times"></i>
-														</button>
-													</div>
-												</td>
-											</tr>
-											<tr>
-												<td>Biotechnology</td>
-												<td>Biotechnology</td>
+												<td>Anna Frenk</td>
+												<td>Class Representative</td>
+												<td>Goa Bussiness School</td>
+												<td>MCA</td>
 												<td>
 													<div class="form-button-action">
 														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit">
@@ -326,7 +316,14 @@
 
 <!-- jQuery Scrollbar -->
 <script src="../assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+
+
+<!-- Datatables -->
 <script src="../assets/js/plugin/datatables/datatables.min.js"></script>
+
+<!-- DateTimePicker -->
+<script src="../assets/js/plugin/datepicker/bootstrap-datetimepicker.min.js"></script>
+
 
 <!-- Select2 -->
 <script src="../assets/js/plugin/select2/select2.full.min.js"></script>
@@ -337,7 +334,6 @@
 <!-- Azzara JS -->
 <script src="../assets/js/ready.min.js"></script>
 <script >
-
 	$(document).ready(function() {
 
 		// Add Row

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<title>Home</title>
+	<title>Polls</title>
 	<meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
 	<!-- <link rel="icon" href="http://demo.themekita.com/azzara/livepreview/assets/img/icon.ico" type="image/x-icon"/> -->
 
@@ -31,7 +31,7 @@
 			<!-- Logo Header -->
 			<div class="logo-header">
 				
-				<a href="index.html" class="logo">
+				<a href="index.php" class="logo">
 					<!-- <img src="http://demo.themekita.com/azzara/livepreview/assets/img/logoazzara.svg" alt="navbar brand" class="navbar-brand"> -->
 				</a>
 				<p class="h2 text-white">Vote Now</p>
@@ -92,31 +92,31 @@
 				<div class="sidebar-content">
 					<ul class="nav">
 						<li class="nav-item">
-							<a href="home.html">
+							<a href="index.php">
 								<i class="fas fa-home"></i>
 								<p>Dashboard</p>
 							</a>
 						</li>
-						<li class="nav-item active">
-							<a href="">
+						<li class="nav-item">
+							<a href="positions.php">
 								<i class="fas fas fa-user-tie"></i>
 								<p>Manage Positions</p>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="candidates.html">
+							<a href="candidates.php">
 								<i class="fas far fa-address-card"></i>
 								<p>Manage Candidates</p>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="elections.html">
+							<a href="elections.php">
 								<i class="fas fa-edit"></i>
 								<p>Elections</p>
 							</a>
 						</li>
-						<li class="nav-item">
-							<a href="polls.html">
+						<li class="nav-item active">
+							<a href="">
 								<i class="fas fa-check"></i>
 								<p>Polls</p>
 							</a>
@@ -130,19 +130,19 @@
 							<div class="collapse" id="dept">
 								<ul class="nav nav-collapse">
 									<li>
-										<a href="departments.html">
+										<a href="departments.php">
 											<span class="sub-item">Departments</span>
 										</a>
 									</li>
 									<li>
-										<a href="programs.html">
+										<a href="programs.php">
 											<span class="sub-item">Programs</span>
 										</a>
 									</li>
 								</ul>
 							</div>
 							<li class="nav-item">
-								<a href="students.html">
+								<a href="students.php">
 									<i class="fas fa-id-card"></i>
 									<p>Students</p>
 								</a>
@@ -157,105 +157,86 @@
 		<div class="main-panel">
 			<div class="content">
 				<div class="page-inner">
-					<div class="page-header">
-						<h4 class="page-title">Positions</h4>
-					</div>
-					<div class="col-md-10 ml-auto mr-auto">
+					<h4 class="page-title">Polls</h4>
+					<div class="col-md-12">
 						<div class="card">
-							<div class="card-header">
-								<div class="d-flex align-items-center">
-									<h4 class="page-title">Positions</h4>
-									<button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#addRowModal">
-										<i class="fa fa-plus"></i>
-										Add New Position
-									</button>
-								</div>
-							</div>
 							<div class="card-body">
-								<!-- Modal -->
-								<div class="modal fade" id="addRowModal" tabindex="-1" role="dialog" aria-hidden="true">
-									<div class="modal-dialog" role="document">
-										<div class="modal-content">
-											<div class="modal-header no-bd">
-												<h5 class="modal-title">
-													<span class="fw-mediumbold">
-														New	Position
-													</span>
-												</h5>
-												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-													<span aria-hidden="true">&times;</span>
-												</button>
-											</div>
-											<div class="modal-body">
-												<form>
-													<div class="row">
-														<div class="col-sm-12">
-															<div class="form-group form-group-default">
-																<label>Name</label>
-																<input id="addName" type="text" class="form-control" placeholder="Enter position name">
-															</div>
-														</div>
-													</div>
-												</form>
-											</div>
-											<div class="modal-footer no-bd">
-												<button type="button" id="addRowButton" class="btn btn-primary">Add</button>
-												<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-											</div>
-										</div>
-									</div>
-								</div>
-
 								<div class="table-responsive">
 									<table id="add-row" class="display table table-striped table-hover" >
 										<thead>
 											<tr>
 												<th>Position Name</th>
+												<th>Department Name</th>
+												<th>Program Name</th>
 												<th style="width: 10%">Action</th>
 											</tr>
 										</thead>
 										<tbody>
 											<tr>
 												<td>General Secretary</td>
+												<td>--</td>
+												<td>--</td>
 												<td>
 													<div class="form-button-action">
-														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit">
-															<i class="fa fa-edit"></i>
-														</button>
-														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Delete">
-															<i class="fa fa-times"></i>
+														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="View Results">
+															<i class="far fa-check-square"></i>
 														</button>
 													</div>
 												</td>
 											</tr>
 											<tr>
 												<td>Secretary</td>
+												<td>--</td>
+												<td>--</td>
 												<td>
 													<div class="form-button-action">
-														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit">
-															<i class="fa fa-edit"></i>
-														</button>
-														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Delete">
-															<i class="fa fa-times"></i>
+														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="View Results">
+															<i class="far fa-check-square"></i>
 														</button>
 													</div>
 												</td>
 											</tr>
 											<tr>
 												<td>Class Representative</td>
+												<td>Goa Bussiness School</td>
+												<td>MCA</td>
 												<td>
 													<div class="form-button-action">
-														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit">
-															<i class="fa fa-edit"></i>
-														</button>
-														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Delete">
-															<i class="fa fa-times"></i>
+														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="View Results">
+															<i class="far fa-check-square"></i>
 														</button>
 													</div>
 												</td>
 											</tr>
 										</tbody>
 									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- charts -->
+					<div class="row">
+						<div class="col-md-6">
+							<div class="card">
+								<div class="card-header">
+									<div class="card-title">Bar Chart</div>
+								</div>
+								<div class="card-body">
+									<div class="chart-container">
+										<canvas id="barChart"></canvas>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="card">
+								<div class="card-header">
+									<div class="card-title">Pie Chart</div>
+								</div>
+								<div class="card-body">
+									<div class="chart-container">
+										<canvas id="pieChart" style="width: 50%; height: 50%"></canvas>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -282,9 +263,17 @@
 <!-- Datatables -->
 <script src="../assets/js/plugin/datatables/datatables.min.js"></script>
 
-<!-- DateTimePicker -->
-<script src="../assets/js/plugin/datepicker/bootstrap-datetimepicker.min.js"></script>
 
+<!-- Bootstrap Tagsinput -->
+<script src="../assets/js/plugin/bootstrap-tagsinput/bootstrap-tagsinput.min.js"></script>
+
+<!-- Bootstrap Wizard -->
+<script src="../assets/js/plugin/bootstrap-wizard/bootstrapwizard.js"></script>
+
+<!-- jQuery Validation -->
+<script src="../assets/js/plugin/jquery.validate/jquery.validate.min.js"></script>
+
+<script src="../assets/js/plugin/chart.js/chart.min.js"></script>
 
 <!-- Select2 -->
 <script src="../assets/js/plugin/select2/select2.full.min.js"></script>
@@ -294,27 +283,73 @@
 
 <!-- Azzara JS -->
 <script src="../assets/js/ready.min.js"></script>
-<script >
-	$(document).ready(function() {
-
-		// Add Row
-		$('#add-row').DataTable({
+<script>
+	$('#add-row').DataTable({
 			"pageLength": 5,
 		});
-
-		var action = '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
-
-		$('#addRowButton').click(function() {
-			$('#add-row').dataTable().fnAddData([
-				$("#addName").val(),
-				$("#addPosition").val(),
-				$("#addOffice").val(),
-				action
-				]);
-			$('#addRowModal').modal('hide');
-
-		});
+	var myBarChart = new Chart(barChart, {
+		type: 'bar',
+		data: {
+			labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+			datasets : [{
+				label: "Sales",
+				backgroundColor: 'rgb(23, 125, 255)',
+				borderColor: 'rgb(23, 125, 255)',
+				data: [3, 2, 9, 5, 4, 6, 4, 6, 7, 8, 7, 4],
+			}],
+		},
+		options: {
+			responsive: true, 
+			maintainAspectRatio: false,
+			scales: {
+				yAxes: [{
+					ticks: {
+						beginAtZero:true
+					}
+				}]
+			},
+		}
 	});
+
+	var myPieChart = new Chart(pieChart, {
+		type: 'pie',
+		data: {
+			datasets: [{
+				data: [50, 35, 15],
+				backgroundColor :["#1d7af3","#f3545d","#fdaf4b"],
+				borderWidth: 0
+			}],
+			labels: ['New Visitors', 'Subscribers', 'Active Users'] 
+		},
+		options : {
+			responsive: true, 
+			maintainAspectRatio: false,
+			legend: {
+				position : 'bottom',
+				labels : {
+					fontColor: 'rgb(154, 154, 154)',
+					fontSize: 11,
+					usePointStyle : true,
+					padding: 20
+				}
+			},
+			pieceLabel: {
+				render: 'percentage',
+				fontColor: 'white',
+				fontSize: 14,
+			},
+			tooltips: false,
+			layout: {
+				padding: {
+					left: 20,
+					right: 20,
+					top: 20,
+					bottom: 20
+				}
+			}
+		}
+	});
+
 </script>
 </body>
 </html>

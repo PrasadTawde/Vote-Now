@@ -1,0 +1,58 @@
+var updateStudentButton,updateStudentForm;
+updateStudentButton=createElem("#updateStudentButton");
+updateStudentButton.addEventListener("click",function(event){
+    event.preventDefault();
+    var btn_prev=this.value;
+    this.value="loading...";
+    updateStudentForm=createElem("#updateStudentForm");
+    var student_data=new FormData(updateStudentForm);
+    student_data.append("submit",btn_prev);
+    ajax("POST","student/update_student.php",function(response){
+        updateStudentButton.value=btn_prev;
+        var resp=JSON.parse(response);
+        queryProperty(resp,"error_pr",function(){
+            createElem("#error_pr").innerHTML=resp.error_pr;
+        });
+        queryProperty(resp,"error_fname",function(){
+            createElem("#error_fname").innerHTML=resp.error_fname;
+        });
+        queryProperty(resp,"error_lname",function(){
+            createElem("#error_lname").innerHTML=resp.error_lname;
+        });
+        queryProperty(resp,"error_email",function(){
+            createElem("#error_email").innerHTML=resp.error_email;
+        });
+        queryProperty(resp,"error_contact",function(){
+            createElem("#error_contact").innerHTML=resp.error_contact;
+        });
+        queryProperty(resp,"error_dept",function(){
+            createElem("#error_dept").innerHTML=resp.error_dept;
+        });
+        queryProperty(resp,"error_course",function(){
+            createElem("#error_course").innerHTML=resp.error_course;
+        });
+        queryProperty(resp,"error_year",function(){
+            createElem("#error_year").innerHTML=resp.error_year;
+        });
+        queryProperty(resp,"error_leave",function(){
+            createElem("#error_leave").innerHTML=resp.error_leave;
+        });
+        queryProperty(resp,"error",function(){
+            swal({
+                icon:"error",
+                title:"Oops!!",
+                text:resp.error
+            });
+        });
+        queryProperty(resp,"success",function(){
+            swal({
+                icon:"success",
+                title:"successful",
+                text:resp.success
+            }).then(function(){
+                location.reload();
+            });
+            $('#updateStudentModal').modal('hide');
+        })
+    },student_data);
+})

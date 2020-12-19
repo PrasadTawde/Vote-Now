@@ -1,3 +1,29 @@
+<?php 
+include_once("../config.php");
+include_once("../login/functions.php");
+if (!func::checkLoginState($dbh))
+	{
+		header("location:../login/login.php");
+	}
+	
+	else if ($_SESSION['userType'] != "student") {
+		header("Location:../../");	
+	}
+	$result = $dbh->prepare( "SELECT * FROM STUDENTS WHERE STUDENT_ID = :user_id" );
+	$result->bindParam(':user_id', $_SESSION['userid']);
+
+		$result->setFetchMode(PDO::FETCH_ASSOC);
+		$result->execute();
+		while ($result2=$result->fetch()) {
+			$firstName = ucfirst($result2['STUDENT_FIRSTNAME']);
+			$lastName = ucfirst($result2['STUDENT_LASTNAME']);
+			$email = $result2['STUDENT_EMAIL'];
+			$contact = $result2['STUDENT_CONTACT'];
+			$profile  = $result2['STUDENT_PROFILE'];
+			$course = $result2['COURSE_ID'];
+		}
+	$result =null;
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,7 +57,7 @@
 			<!-- Logo Header -->
 			<div class="logo-header">
 				
-				<a href="index.html" class="logo">
+				<a href="index.php" class="logo">
 					<!-- <img src="http://demo.themekita.com/azzara/livepreview/assets/img/logoazzara.svg" alt="navbar brand" class="navbar-brand"> -->
 				</a>
 				<p class="h2 text-white">Vote Now</p>
@@ -92,19 +118,19 @@
 				<div class="sidebar-content">
 					<ul class="nav">
 						<li class="nav-item">
-							<a href="home.html">
+							<a href="index.php">
 								<i class="fas fa-home"></i>
 								<p>Dashboard</p>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="positions.html">
+							<a href="positions.php">
 								<i class="fas fas fa-user-tie"></i>
 								<p>Manage Positions</p>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="candidates.html">
+							<a href="candidates.php">
 								<i class="fas far fa-address-card"></i>
 								<p>Manage Candidates</p>
 							</a>
@@ -116,37 +142,10 @@
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="polls.html">
+							<a href="polls.php">
 								<i class="fas fa-check"></i>
 								<p>Polls</p>
 							</a>
-						</li>
-						<li class="nav-item">
-							<a data-toggle="collapse" href="#dept">
-								<i class="fas fas fa-school"></i>
-								<p>Departments & Programs</p>
-								<span class="caret"></span>
-							</a>
-							<div class="collapse" id="dept">
-								<ul class="nav nav-collapse">
-									<li>
-										<a href="departments.html">
-											<span class="sub-item">Departments</span>
-										</a>
-									</li>
-									<li>
-										<a href="programs.html">
-											<span class="sub-item">Programs</span>
-										</a>
-									</li>
-								</ul>
-							</div>
-							<li class="nav-item">
-								<a href="students.html">
-									<i class="fas fa-id-card"></i>
-									<p>Students</p>
-								</a>
-							</li>
 						</li>
 					</ul>
 				</div>
@@ -165,82 +164,32 @@
 							<div class="card-header">
 								<div class="d-flex align-items-center">
 									<h4 class="page-title">Elections</h4>
-									<button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#addRowModal">
-										<i class="fa fa-plus"></i>
-										Schedule New Election
-									</button>
 								</div>
 							</div>
 							<div class="card-body">
-								<!-- Modal -->
-								<div class="modal fade" id="addRowModal" tabindex="-1" role="dialog" aria-hidden="true">
+								<!-- Update Modal -->
+								<div class="modal fade" id="updateApplicationModal" tabindex="-1" role="dialog" aria-hidden="true">
 									<div class="modal-dialog" role="document">
 										<div class="modal-content">
 											<div class="modal-header no-bd">
 												<h5 class="modal-title">
 													<span class="fw-mediumbold">
-														New	Election
+														Apply for Election
 													</span>
 												</h5>
 												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 													<span aria-hidden="true">&times;</span>
 												</button>
 											</div>
-											<div class="modal-body">
-												<form>
-													<div class="row">
-														<div class="col-sm-12">
-															<div class="form-group form-group-default">
-																<label>Select Position</label>
-																<select class="form-control" id="formGroupDefaultSelect">
-																	<option selected="" disabled="">--</option>
-																	<option>General Secretary</option>
-																	<option>Secretary</option>
-																	<option>Class Representative</option>
-																</select>
-															</div>
-															<div class="form-group">
-																<label>Select Date</label>
-																<div class="input-group">
-																	<input type="text" class="form-control" id="datepicker" name="datepicker">
-																	<div class="input-group-append">
-																		<span class="input-group-text">
-																			<i class="fa fa-calendar-check"></i>
-																		</span>
-																	</div>
-																</div>
-															</div>
-															<div class="form-group">
-																<label>Starting From</label>
-																<div class="input-group">
-																	<input type="text" class="form-control" id="timepicker1" name="timepicker">
-																	<div class="input-group-append">
-																		<span class="input-group-text">
-																			<i class="fa fa-clock"></i>
-																		</span>
-																	</div>
-																</div>
-															</div>
-															<div class="form-group">
-																<label>Ending On</label>
-																<div class="input-group">
-																	<input type="text" class="form-control" id="timepicker2" name="timepicker">
-																	<div class="input-group-append">
-																		<span class="input-group-text">
-																			<i class="fa fa-clock"></i>
-																		</span>
-																	</div>
-																</div>
-															</div>
-															</div>
-														</div>
-													</div>
-												</form>
-											</div>
-											<div class="modal-footer no-bd">
-												<button type="button" id="addRowButton" class="btn btn-primary">Add</button>
-												<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-											</div>
+											<form action="" method="POST" id="updateApplicationForm">
+												<div class="modal-body" id="update_details">
+													<!-- Updating form with jquery dynamic -->
+												</div>
+												<div class="modal-footer no-bd">
+													<input class="submit btn btn-primary" id="updateApplicationButton" type="submit" value="Update"/>
+													<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+												</div>
+											</form>
 										</div>
 									</div>
 								</div>
@@ -251,64 +200,52 @@
 											<tr>
 												<th>No.</th>
 												<th>Position</th>
+												<th>Department</th>
+												<th>Program</th>
 												<th>Date</th>
 												<th>Starting Time</th>
 												<th>Ending Time</th>
-												<th style="width: 10%">Action</th>
+												<th style="width: 10%">Apply</th>
 											</tr>
 										</thead>
 										<tbody>
+											<?php
+												$stmt = $dbh->prepare( "SELECT ELECTION_ID, ELECTIONS.POSITION_ID, ELECTION_DATE, ELECTION_START_TIME, ELECTION_END_TIME, POSITION_NAME, DEPARTMENTS.DEPARTMENT_NAME, COURSES.COURSE_NAME FROM ELECTIONS
+													INNER JOIN POSITIONS ON ELECTIONS.POSITION_ID = POSITIONS.POSITION_ID
+													INNER JOIN COURSES ON ELECTIONS.COURSE_ID = COURSES.COURSE_ID
+													INNER JOIN DEPARTMENTS ON COURSES.DEPARTMENT_ID = DEPARTMENTS.DEPARTMENT_ID WHERE ELECTIONS.COURSE_ID = :course_id OR COURSES.COURSE_NAME = 'all'" );
+												$stmt->bindParam(':course_id', $course);
+												$stmt->setFetchMode(PDO::FETCH_ASSOC);
+												$stmt->execute();
+												$srno = 0;
+												while ($result=$stmt->fetch()) {
+
+													$srno++;
+													$id = $result['ELECTION_ID'];
+													$position_name = ucfirst($result['POSITION_NAME']);
+													$dept_name = ucfirst($result['DEPARTMENT_NAME']);
+													$course_name = ucfirst($result['COURSE_NAME']);
+													$date = $result['ELECTION_DATE'];
+													$start_time = $result['ELECTION_START_TIME'];
+													$end_time = $result['ELECTION_END_TIME'];
+											?>
 											<tr>
-												<td>01</td>
-												<td>General Secretary</td>
-												<td>11/26/2020</td>
-												<td>10:30</td>
-												<td>16:30</td>
+												<td><?php echo $srno; ?></td>
+												<td><?php echo $position_name; ?></td>
+												<td><?php echo $dept_name; ?></td>
+												<td><?php echo $course_name; ?></td>
+												<td><?php echo $date; ?></td>
+												<td><?php echo $start_time; ?></td>
+												<td><?php echo $end_time; ?></td>
 												<td>
 													<div class="form-button-action">
-														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit">
-															<i class="fa fa-edit"></i>
-														</button>
-														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Delete">
-															<i class="fa fa-times"></i>
+														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg edit_data" data-original-title="Apply" id="<?php echo $id;?>">
+															<i class="fa fa-check-square"></i>
 														</button>
 													</div>
 												</td>
 											</tr>
-											<tr>
-												<td>02</td>
-												<td>Secretary</td>
-												<td>11/26/2020</td>
-												<td>10:30</td>
-												<td>16:30</td>
-												<td>
-													<div class="form-button-action">
-														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit">
-															<i class="fa fa-edit"></i>
-														</button>
-														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Delete">
-															<i class="fa fa-times"></i>
-														</button>
-													</div>
-												</td>
-											</tr>
-											<tr>
-												<td>03</td>
-												<td>Class Representative</td>
-												<td>11/26/2020</td>
-												<td>10:30</td>
-												<td>16:30</td>
-												<td>
-													<div class="form-button-action">
-														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit">
-															<i class="fa fa-edit"></i>
-														</button>
-														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Delete">
-															<i class="fa fa-times"></i>
-														</button>
-													</div>
-												</td>
-											</tr>
+										<?php } unset($result); unset($stmt);?>
 										</tbody>
 									</table>
 								</div>
@@ -345,17 +282,10 @@
 
 <!-- Azzara JS -->
 <script src="../assets/js/ready.min.js"></script>
-<script >
-	$('#datepicker').datetimepicker({
-			format: 'MM/DD/YYYY',
-	});
-	$('#timepicker1').datetimepicker({
-		format: 'h:mm A', 
-	});
-	$('#timepicker2').datetimepicker({
-		format: 'h:mm A', 
-	});
+<script src="../assets/js/functions.js"></script>
+<script src="../assets/js/modify_candidate.js"></script>
 
+<script >
 	$(document).ready(function() {
 
 		// Add Row
@@ -363,18 +293,44 @@
 			"pageLength": 5,
 		});
 
-		var action = '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
+	//edit election
+	$(document).on('click','.edit_data',function(){
+		var edit_data = $(this).attr('id');
+		$.ajax({
+				url: "apply/edit_application.php",
+				type: "POST",
+				data: {edit_data:edit_data},
+				success:function(data){
+					$("#update_details").html(data);
+					$("#updateApplicationModal").modal('show');
+				}
+			});
+	});
 
-		$('#addRowButton').click(function() {
-			$('#add-row').dataTable().fnAddData([
-				$("#addName").val(),
-				$("#addPosition").val(),
-				$("#addOffice").val(),
-				action
-				]);
-			$('#addRowModal').modal('hide');
+	//update course
+	$('updateApplicationButton').click(function(e){
+		e.preventDefault();
+			$.ajax({
+				url: "apply/modify_candidate.php",
+				type: "POST",
+				data: $("#updateApplicationForm").serialize(),
+				success:function(data){
+					swal("Successfully Applied!",{
+						icon : "success",
+						buttons: {       			
+							confirm: {
+								className : 'btn btn-success'
+							}
+						},
+					}).then(function () {
+						swal.close();
+						location.reload();
+					});
+					$("#updateApplicationModal").modal('hide');
+				}
+			});
+	});
 
-		});
 	});
 </script>
 </body>

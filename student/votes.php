@@ -1,8 +1,33 @@
+<?php 
+include_once("../config.php");
+include_once("../login/functions.php");
+if (!func::checkLoginState($dbh))
+	{
+		header("location:../login/login.php");
+	}
+	
+	else if ($_SESSION['userType'] != "student") {
+		header("Location:../../");	
+	}
+	// 	$result = $dbh->prepare( "SELECT * FROM USERS WHERE USER_ID = :user_id" );
+	// 	$result->bindParam(':user_id', $_SESSION['userid']);
+
+	// 	$result->setFetchMode(PDO::FETCH_ASSOC);
+	// 	$result->execute();
+	// 	while ($result2=$result->fetch()) {
+	// 		$firstName = ucfirst($result2['USER_FIRSTNAME']);
+	// 		$lastName = ucfirst($result2['USER_LASTNAME']);
+	// 		$email = $result2['USER_EMAIL'];
+	// 		$contact = $result2['USER_CONTACT'];
+	// 		$profile  = $result2['USER_PROFILE'];
+	// 	}
+	// $result =null;
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<title>Polls</title>
+	<title>Elections</title>
 	<meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
 	<!-- <link rel="icon" href="http://demo.themekita.com/azzara/livepreview/assets/img/icon.ico" type="image/x-icon"/> -->
 
@@ -31,7 +56,7 @@
 			<!-- Logo Header -->
 			<div class="logo-header">
 				
-				<a href="index.html" class="logo">
+				<a href="index.php" class="logo">
 					<!-- <img src="http://demo.themekita.com/azzara/livepreview/assets/img/logoazzara.svg" alt="navbar brand" class="navbar-brand"> -->
 				</a>
 				<p class="h2 text-white">Vote Now</p>
@@ -92,61 +117,40 @@
 				<div class="sidebar-content">
 					<ul class="nav">
 						<li class="nav-item">
-							<a href="home.html">
+							<a href="index.php">
 								<i class="fas fa-home"></i>
 								<p>Dashboard</p>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="positions.html">
+							<a href="positions.php">
 								<i class="fas fas fa-user-tie"></i>
 								<p>Manage Positions</p>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="candidates.html">
+							<a href="candidates.php">
 								<i class="fas far fa-address-card"></i>
 								<p>Manage Candidates</p>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="elections.html">
+							<a href="elections.php">
 								<i class="fas fa-edit"></i>
 								<p>Elections</p>
 							</a>
 						</li>
 						<li class="nav-item active">
-							<a href="">
+							<a href="votes.php">
 								<i class="fas fa-check"></i>
-								<p>Polls</p>
+								<p>Vote</p>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a data-toggle="collapse" href="#dept">
-								<i class="fas fas fa-school"></i>
-								<p>Departments & Programs</p>
-								<span class="caret"></span>
+							<a href="polls.php">
+								<i class="fas fa-check"></i>
+								<p>Polls</p>
 							</a>
-							<div class="collapse" id="dept">
-								<ul class="nav nav-collapse">
-									<li>
-										<a href="departments.html">
-											<span class="sub-item">Departments</span>
-										</a>
-									</li>
-									<li>
-										<a href="programs.html">
-											<span class="sub-item">Programs</span>
-										</a>
-									</li>
-								</ul>
-							</div>
-							<li class="nav-item">
-								<a href="students.html">
-									<i class="fas fa-id-card"></i>
-									<p>Students</p>
-								</a>
-							</li>
 						</li>
 					</ul>
 				</div>
@@ -157,86 +161,91 @@
 		<div class="main-panel">
 			<div class="content">
 				<div class="page-inner">
-					<h4 class="page-title">Polls</h4>
-					<div class="col-md-12">
+					<div class="page-header">
+						<h4 class="page-title">Elections</h4>
+					</div>
+					<div class="col-md-10 ml-auto mr-auto">
 						<div class="card">
+							<div class="card-header">
+								<div class="d-flex align-items-center">
+									<h4 class="page-title">Elections</h4>
+								</div>
+							</div>
 							<div class="card-body">
+								<!-- Update Modal -->
+								<div class="modal fade" id="updateElectionModal" tabindex="-1" role="dialog" aria-hidden="true">
+									<div class="modal-dialog" role="document">
+										<div class="modal-content">
+											<div class="modal-header no-bd">
+												<h5 class="modal-title">
+													<span class="fw-mediumbold">
+														Election details
+													</span>
+												</h5>
+												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+													<span aria-hidden="true">&times;</span>
+												</button>
+											</div>
+											<div id="update_details">
+												<!-- Updating form with jquery dynamic -->
+											</div>
+										</div>
+									</div>
+								</div>
+
 								<div class="table-responsive">
 									<table id="add-row" class="display table table-striped table-hover" >
 										<thead>
 											<tr>
-												<th>Position Name</th>
-												<th>Department Name</th>
-												<th>Program Name</th>
+												<th>No.</th>
+												<th>Position</th>
+												<th>Department</th>
+												<th>Program</th>
+												<th>Date</th>
+												<th>Starting Time</th>
+												<th>Ending Time</th>
 												<th style="width: 10%">Action</th>
 											</tr>
 										</thead>
 										<tbody>
+											<?php
+												$stmt = $dbh->prepare( "SELECT ELECTION_ID, ELECTIONS.POSITION_ID, ELECTION_DATE, ELECTION_START_TIME, ELECTION_END_TIME, POSITION_NAME, DEPARTMENTS.DEPARTMENT_NAME, COURSES.COURSE_NAME FROM ELECTIONS
+													INNER JOIN POSITIONS ON ELECTIONS.POSITION_ID = POSITIONS.POSITION_ID
+													INNER JOIN COURSES ON ELECTIONS.COURSE_ID = COURSES.COURSE_ID
+													INNER JOIN DEPARTMENTS ON COURSES.DEPARTMENT_ID = DEPARTMENTS.DEPARTMENT_ID;" );
+												$stmt->setFetchMode(PDO::FETCH_ASSOC);
+												$stmt->execute();
+												$srno = 0;
+												while ($result=$stmt->fetch()) {
+
+													$srno++;
+													$id = $result['ELECTION_ID'];
+													$position_name = ucfirst($result['POSITION_NAME']);
+													$dept_name = ucfirst($result['DEPARTMENT_NAME']);
+													$course_name = ucfirst($result['COURSE_NAME']);
+													$date = $result['ELECTION_DATE'];
+													$start_time = $result['ELECTION_START_TIME'];
+													$end_time = $result['ELECTION_END_TIME'];
+											?>
 											<tr>
-												<td>General Secretary</td>
-												<td>--</td>
-												<td>--</td>
+												<td><?php echo $srno; ?></td>
+												<td><?php echo $position_name; ?></td>
+												<td><?php echo $dept_name; ?></td>
+												<td><?php echo $course_name; ?></td>
+												<td><?php echo $date; ?></td>
+												<td><?php echo $start_time; ?></td>
+												<td><?php echo $end_time; ?></td>
 												<td>
 													<div class="form-button-action">
-														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="View Results">
-															<i class="far fa-check-square"></i>
+														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg view_data" data-original-title="View Details" id="<?php echo $id;?>">
+															<i class="fa fa-check-square"></i>
 														</button>
 													</div>
 												</td>
 											</tr>
-											<tr>
-												<td>Secretary</td>
-												<td>--</td>
-												<td>--</td>
-												<td>
-													<div class="form-button-action">
-														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="View Results">
-															<i class="far fa-check-square"></i>
-														</button>
-													</div>
-												</td>
-											</tr>
-											<tr>
-												<td>Class Representative</td>
-												<td>Goa Bussiness School</td>
-												<td>MCA</td>
-												<td>
-													<div class="form-button-action">
-														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="View Results">
-															<i class="far fa-check-square"></i>
-														</button>
-													</div>
-												</td>
-											</tr>
+										<?php } unset($result); unset($stmt);?>
 										</tbody>
 									</table>
-								</div>
-							</div>
-						</div>
-					</div>
-					<!-- charts -->
-					<div class="row">
-						<div class="col-md-6">
-							<div class="card">
-								<div class="card-header">
-									<div class="card-title">Bar Chart</div>
-								</div>
-								<div class="card-body">
-									<div class="chart-container">
-										<canvas id="barChart"></canvas>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="card">
-								<div class="card-header">
-									<div class="card-title">Pie Chart</div>
-								</div>
-								<div class="card-body">
-									<div class="chart-container">
-										<canvas id="pieChart" style="width: 50%; height: 50%"></canvas>
-									</div>
 								</div>
 							</div>
 						</div>
@@ -258,22 +267,10 @@
 
 <!-- jQuery Scrollbar -->
 <script src="../assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
-
-
-<!-- Datatables -->
 <script src="../assets/js/plugin/datatables/datatables.min.js"></script>
+<script src="../assets/js/plugin/moment/moment.min.js"></script>
+<script src="../assets/js/plugin/datepicker/bootstrap-datetimepicker.min.js"></script>
 
-
-<!-- Bootstrap Tagsinput -->
-<script src="../assets/js/plugin/bootstrap-tagsinput/bootstrap-tagsinput.min.js"></script>
-
-<!-- Bootstrap Wizard -->
-<script src="../assets/js/plugin/bootstrap-wizard/bootstrapwizard.js"></script>
-
-<!-- jQuery Validation -->
-<script src="../assets/js/plugin/jquery.validate/jquery.validate.min.js"></script>
-
-<script src="../assets/js/plugin/chart.js/chart.min.js"></script>
 
 <!-- Select2 -->
 <script src="../assets/js/plugin/select2/select2.full.min.js"></script>
@@ -283,73 +280,46 @@
 
 <!-- Azzara JS -->
 <script src="../assets/js/ready.min.js"></script>
-<script>
-	$('#add-row').DataTable({
+
+<script >
+	$('#dateSelect').datetimepicker({
+			format: 'DD/MM/YYYY',
+			daysOfWeekDisabled: [0],
+			minDate: moment(),
+	});
+	$('#timeFrom').datetimepicker({
+		format: 'h:mm A', 
+		// disabledTimeIntervals: [
+  //     		[moment().hour(0).minutes(0), moment().hour(8).minutes(30)],
+  //     		[moment().hour(20).minutes(30), moment().hour(24).minutes(0)]
+  //     	]
+	});
+	$('#timeTo').datetimepicker({
+		format: 'h:mm A', 
+	});
+
+	$(document).ready(function() {
+
+		// Add Row
+		$('#add-row').DataTable({
 			"pageLength": 5,
 		});
-	var myBarChart = new Chart(barChart, {
-		type: 'bar',
-		data: {
-			labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-			datasets : [{
-				label: "Sales",
-				backgroundColor: 'rgb(23, 125, 255)',
-				borderColor: 'rgb(23, 125, 255)',
-				data: [3, 2, 9, 5, 4, 6, 4, 6, 7, 8, 7, 4],
-			}],
-		},
-		options: {
-			responsive: true, 
-			maintainAspectRatio: false,
-			scales: {
-				yAxes: [{
-					ticks: {
-						beginAtZero:true
-					}
-				}]
-			},
-		}
+
+	//edit election
+	$(document).on('click','.view_data',function(){
+		var view_data = $(this).attr('id');
+		$.ajax({
+				url: "view_elections.php",
+				type: "POST",
+				data: {view_data:view_data},
+				success:function(data){
+					$("#update_details").html(data);
+					$("#updateElectionModal").modal('show');
+				}
+			});
 	});
 
-	var myPieChart = new Chart(pieChart, {
-		type: 'pie',
-		data: {
-			datasets: [{
-				data: [50, 35, 15],
-				backgroundColor :["#1d7af3","#f3545d","#fdaf4b"],
-				borderWidth: 0
-			}],
-			labels: ['New Visitors', 'Subscribers', 'Active Users'] 
-		},
-		options : {
-			responsive: true, 
-			maintainAspectRatio: false,
-			legend: {
-				position : 'bottom',
-				labels : {
-					fontColor: 'rgb(154, 154, 154)',
-					fontSize: 11,
-					usePointStyle : true,
-					padding: 20
-				}
-			},
-			pieceLabel: {
-				render: 'percentage',
-				fontColor: 'white',
-				fontSize: 14,
-			},
-			tooltips: false,
-			layout: {
-				padding: {
-					left: 20,
-					right: 20,
-					top: 20,
-					bottom: 20
-				}
-			}
-		}
 	});
-
 </script>
 </body>
 </html>

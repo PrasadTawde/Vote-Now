@@ -27,7 +27,7 @@ if (!func::checkLoginState($dbh))
 <html lang="en">
 <head>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<title>Departments</title>
+	<title>Elections</title>
 	<meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
 	<!-- <link rel="icon" href="http://demo.themekita.com/azzara/livepreview/assets/img/icon.ico" type="image/x-icon"/> -->
 
@@ -134,8 +134,8 @@ if (!func::checkLoginState($dbh))
 								<p>Manage Candidates</p>
 							</a>
 						</li>
-						<li class="nav-item">
-							<a href="elections.php">
+						<li class="nav-item active">
+							<a href="">
 								<i class="fas fa-edit"></i>
 								<p>Elections</p>
 							</a>
@@ -146,16 +146,16 @@ if (!func::checkLoginState($dbh))
 								<p>Polls</p>
 							</a>
 						</li>
-						<li class="nav-item active">
+						<li class="nav-item">
 							<a data-toggle="collapse" href="#dept">
 								<i class="fas fas fa-school"></i>
 								<p>Departments & Programs</p>
 								<span class="caret"></span>
 							</a>
-							<div class="collapse show" id="dept">
+							<div class="collapse" id="dept">
 								<ul class="nav nav-collapse">
-									<li class="active">
-										<a href="">
+									<li>
+										<a href="departments.php">
 											<span class="sub-item">Departments</span>
 										</a>
 									</li>
@@ -183,48 +183,120 @@ if (!func::checkLoginState($dbh))
 			<div class="content">
 				<div class="page-inner">
 					<div class="page-header">
-						<h4 class="page-title">Departments & Program</h4>
+						<h4 class="page-title">Elections</h4>
 					</div>
-					<div class="col-md-12 ml-auto mr-auto">
+					<div class="col-md-10 ml-auto mr-auto">
 						<div class="card">
 							<div class="card-header">
 								<div class="d-flex align-items-center">
-									<h4 class="card-title">Departments</h4>
-									<button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#addDeptModal">
+									<h4 class="page-title">Elections</h4>
+									<button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#scheduleElectionModal">
 										<i class="fa fa-plus"></i>
-										Add New Department
+										Schedule New Election
 									</button>
 								</div>
 							</div>
 							<div class="card-body">
-								<!-- Modal -->
-								<div class="modal fade" id="addDeptModal" tabindex="-1" role="dialog" aria-hidden="true">
+								<!-- Add Modal -->
+								<div class="modal fade" id="scheduleElectionModal" tabindex="-1" role="dialog" aria-hidden="true">
 									<div class="modal-dialog" role="document">
 										<div class="modal-content">
 											<div class="modal-header no-bd">
 												<h5 class="modal-title">
 													<span class="fw-mediumbold">
-														New	Department
+														New	Position
 													</span>
 												</h5>
 												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 													<span aria-hidden="true">&times;</span>
 												</button>
 											</div>
-											<form action="" method="POST" id="deptForm">
+											<form action="" method="POST" id="scheduleForm">
 												<div class="modal-body">
 													<div class="row">
 														<div class="col-sm-12">
 															<div class="form-group form-group-default">
-																<label>Name</label>
-																<input id="deptName" name="deptName" type="text" class="form-control" placeholder="Enter department name">
-																<span class="text-danger" id="namedpt_error"></span>
+																<label>Select Position</label>
+																<select class="form-control" id="positionSelect" name="positionSelect">
+																	<option selected="" disabled="">--</option>
+																	<?php
+																		$stmt = $dbh->prepare( "SELECT * FROM POSITIONS");
+																		$stmt->setFetchMode(PDO::FETCH_ASSOC);
+																		$stmt->execute();
+																		while ($result=$stmt->fetch()) {
+																			$id = $result['POSITION_ID'];
+																			$name = $result['POSITION_NAME'];
+																	?>
+																	<option value="<?php echo $id; ?>"><?php echo $name; ?></option>
+																<?php } unset($stmt); unset($result); ?>
+																</select>
+																<span class="text-danger" id="error_position"></span>
+															</div>
+															<div class="form-group form-group-default">
+																<label>Select Department</label>
+																<select class="form-control" id="deptSelect" name="deptSelect">
+																	<option selected="" disabled="">--</option>
+																	<?php
+																		$stmt = $dbh->prepare( "SELECT * FROM DEPARTMENTS");
+																		$stmt->setFetchMode(PDO::FETCH_ASSOC);
+																		$stmt->execute();
+																		while ($result=$stmt->fetch()) {
+																			$id = $result['DEPARTMENT_ID'];
+																			$name = $result['DEPARTMENT_NAME'];
+																	?>
+																	<option value="<?php echo $id; ?>"><?php echo $name; ?></option>
+																<?php } unset($stmt); unset($result); ?>
+																</select>
+																<span class="text-danger" id="error_dept"></span>
+															</div>
+															<div class="form-group form-group-default">
+																<label>Select Program</label>
+																<select class="form-control" id="courseSelect" name="courseSelect">
+																	<option selected="" disabled="">Select Department first</option>
+																</select>
+																<span class="text-danger" id="error_course"></span>
+															</div>
+															<div class="form-group">
+																<label>Select Date</label>
+																<div class="input-group">
+																	<input type="text" class="form-control" id="dateSelect" name="dateSelect">
+																	<div class="input-group-append">
+																		<span class="input-group-text">
+																			<i class="fa fa-calendar-check"></i>
+																		</span>
+																	</div>
+																<span class="text-danger" id="error_date"></span>
+																</div>
+															</div>
+															<div class="form-group">
+																<label>Starting From</label>
+																<div class="input-group">
+																	<input type="text" class="form-control" id="timeFrom" name="timeFrom">
+																	<div class="input-group-append">
+																		<span class="input-group-text">
+																			<i class="fa fa-clock"></i>
+																		</span>
+																	</div>
+																</div>
+																<span class="text-danger" id="error_time_from"></span>
+															</div>
+															<div class="form-group">
+																<label>Ending On</label>
+																<div class="input-group">
+																	<input type="text" class="form-control" id="timeTo" name="timeTo">
+																	<div class="input-group-append">
+																		<span class="input-group-text">
+																			<i class="fa fa-clock"></i>
+																		</span>
+																	</div>
+																</div>
+																<span class="text-danger" id="error_time_to"></span>
 															</div>
 														</div>
 													</div>
 												</div>
 												<div class="modal-footer no-bd">
-													<input class="submit btn btn-primary" id="addDeptButton" type="submit" value="Add"/>
+													<input class="submit btn btn-primary" name="ScheduleButton" id="ScheduleButton" type="submit" value="Schedule"/>
 													<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
 												</div>
 											</form>
@@ -233,33 +305,25 @@ if (!func::checkLoginState($dbh))
 								</div>
 
 								<!-- Update Modal -->
-								<div class="modal fade" id="updateDeptModal" tabindex="-1" role="dialog" aria-hidden="true">
+								<div class="modal fade" id="updateElectionModal" tabindex="-1" role="dialog" aria-hidden="true">
 									<div class="modal-dialog" role="document">
 										<div class="modal-content">
 											<div class="modal-header no-bd">
 												<h5 class="modal-title">
 													<span class="fw-mediumbold">
-														Update Department
+														Update Election details
 													</span>
 												</h5>
 												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 													<span aria-hidden="true">&times;</span>
 												</button>
 											</div>
-											<form action="" method="POST" id="updateDeptForm">
+											<form action="" method="POST" id="updateElectionForm">
 												<div class="modal-body" id="update_details">
-													<!-- <div class="row">
-														<div class="col-sm-12">
-															<div class="form-group form-group-default">
-																<label>Name</label>
-																<input id="deptName" name="deptName" type="text" class="form-control" placeholder="Enter department name">
-																<span class="text-danger" id="namedpt_error"></span>
-															</div>
-														</div>
-													</div> -->
+													<!-- Updating form with jquery dynamic -->
 												</div>
 												<div class="modal-footer no-bd">
-													<input class="submit btn btn-primary" id="updateDeptButton" type="submit" value="Update"/>
+													<input class="submit btn btn-primary" id="updateElectionButton" type="submit" value="Update"/>
 													<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
 												</div>
 											</form>
@@ -272,33 +336,43 @@ if (!func::checkLoginState($dbh))
 										<thead>
 											<tr>
 												<th>No.</th>
-												<th>Department Name</th>
+												<th>Position</th>
+												<th>Department</th>
+												<th>Program</th>
+												<th>Date</th>
+												<th>Starting Time</th>
+												<th>Ending Time</th>
 												<th style="width: 10%">Action</th>
 											</tr>
 										</thead>
-										<!-- <tfoot>
-											<tr>
-												<th>Name</th>
-												<th>Position</th>
-												<th>Office</th>
-												<th>Action</th>
-											</tr>
-										</tfoot> -->
 										<tbody>
 											<?php
-												$result = $dbh->prepare( "SELECT * FROM DEPARTMENTS WHERE DEPARTMENT_NAME != 'all';" );
-												$result->setFetchMode(PDO::FETCH_ASSOC);
-												$result->execute();
+												$stmt = $dbh->prepare( "SELECT ELECTION_ID, ELECTIONS.POSITION_ID, ELECTION_DATE, ELECTION_START_TIME, ELECTION_END_TIME, POSITION_NAME, DEPARTMENTS.DEPARTMENT_NAME, COURSES.COURSE_NAME FROM ELECTIONS
+													INNER JOIN POSITIONS ON ELECTIONS.POSITION_ID = POSITIONS.POSITION_ID
+													INNER JOIN COURSES ON ELECTIONS.COURSE_ID = COURSES.COURSE_ID
+													INNER JOIN DEPARTMENTS ON COURSES.DEPARTMENT_ID = DEPARTMENTS.DEPARTMENT_ID;" );
+												$stmt->setFetchMode(PDO::FETCH_ASSOC);
+												$stmt->execute();
 												$srno = 0;
-												while ($result2=$result->fetch()) {
+												while ($result=$stmt->fetch()) {
 
 													$srno++;
-													$id = $result2['DEPARTMENT_ID'];
-													$name = $result2['DEPARTMENT_NAME'];
+													$id = $result['ELECTION_ID'];
+													$position_name = ucfirst($result['POSITION_NAME']);
+													$dept_name = ucfirst($result['DEPARTMENT_NAME']);
+													$course_name = ucfirst($result['COURSE_NAME']);
+													$date = $result['ELECTION_DATE'];
+													$start_time = $result['ELECTION_START_TIME'];
+													$end_time = $result['ELECTION_END_TIME'];
 											?>
 											<tr>
 												<td><?php echo $srno; ?></td>
-												<td><?php echo $name; ?></td>
+												<td><?php echo $position_name; ?></td>
+												<td><?php echo $dept_name; ?></td>
+												<td><?php echo $course_name; ?></td>
+												<td><?php echo $date; ?></td>
+												<td><?php echo $start_time; ?></td>
+												<td><?php echo $end_time; ?></td>
 												<td>
 													<div class="form-button-action">
 														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg edit_data" data-original-title="Edit" id="<?php echo $id;?>">
@@ -310,7 +384,7 @@ if (!func::checkLoginState($dbh))
 													</div>
 												</td>
 											</tr>
-										<?php } unset($result);?>
+										<?php } unset($result); unset($stmt);?>
 										</tbody>
 									</table>
 								</div>
@@ -335,6 +409,9 @@ if (!func::checkLoginState($dbh))
 <!-- jQuery Scrollbar -->
 <script src="../assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
 <script src="../assets/js/plugin/datatables/datatables.min.js"></script>
+<script src="../assets/js/plugin/moment/moment.min.js"></script>
+<script src="../assets/js/plugin/datepicker/bootstrap-datetimepicker.min.js"></script>
+
 
 <!-- Select2 -->
 <script src="../assets/js/plugin/select2/select2.full.min.js"></script>
@@ -346,9 +423,24 @@ if (!func::checkLoginState($dbh))
 <script src="../assets/js/ready.min.js"></script>
 
 <script src="../assets/js/functions.js"></script>
-<script src="../assets/js/add_dept.js"></script>
-<script src="../assets/js/update_dept.js"></script>
+<script src="../assets/js/add_election.js"></script>
+
 <script >
+	$('#dateSelect').datetimepicker({
+			format: 'DD/MM/YYYY',
+			daysOfWeekDisabled: [0],
+			minDate: moment(),
+	});
+	$('#timeFrom').datetimepicker({
+		format: 'h:mm A', 
+		// disabledTimeIntervals: [
+  //     		[moment().hour(0).minutes(0), moment().hour(8).minutes(30)],
+  //     		[moment().hour(20).minutes(30), moment().hour(24).minutes(0)]
+  //     	]
+	});
+	$('#timeTo').datetimepicker({
+		format: 'h:mm A', 
+	});
 
 	$(document).ready(function() {
 
@@ -357,19 +449,40 @@ if (!func::checkLoginState($dbh))
 			"pageLength": 5,
 		});
 
-		var action = '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
-
-	//Add Department
-	$(function(){
-		$('addDeptButton').click(function(e){
-			e.preventDeafult();
-				var deptName = $("#deptName").val();
+		//filling course select box
+		$('#deptSelect').change(function(){
+			var s2 = document.getElementById ('deptSelect');
+			var selectDept = s2.options [s2.selectedIndex] .value;
+			if(selectDept){
 				$.ajax({
-					url: 'department/add_department.php',
+					type:'POST',
+					url: 'election/get_course_select.php',
+					data: {selectDept:selectDept},
+					success:function (html) {
+						$('#courseSelect').html(html);
+					}
+				});
+			}else{
+				$('#courseSelect').html('<option value="">Something went wrong!</option>');
+			}
+		});
+
+		//schedule election
+		$(function(){
+			$('ScheduleButton').click(function(e){
+				e.preventDeafult();
+				var positionSelect = $("#positionSelect").val();
+				var deptSelect = $("#deptSelect").val();
+				var courseSelect = $("#courseSelect").val();
+				var dateSelect = $("#dateSelect").val();
+				var timeFrom = $("#timeFrom").val();
+				var timeTo = $("#timeTo").val();
+				$.ajax({
+					url: 'election/add_election.php',
 					type: 'POST',
-					data: {'deptName' : deptName},
+					data: {positionSelect:positionSelect, deptSelect:deptSelect, courseSelect:courseSelect, dateSelect:dateSelect, timeFrom:timeFrom, timeTo:timeTo},
 					success:function(data){
-						swal("Department Added Successfully !",{
+						swal("Election Schedule Successfully !",{
 							icon : "success",
 							button : {
 								confirm : {
@@ -380,35 +493,35 @@ if (!func::checkLoginState($dbh))
 							swal.close();
 							location.reload();
 						});
-						$('#addDeptModal').modal('hide');
+						$('#scheduleElectionModal').modal('hide');
 					}
 				});
-		});
-	})
+			});
+		})
 
-	//edit department
+	//edit election
 	$(document).on('click','.edit_data',function(){
 		var edit_id = $(this).attr('id');
 		$.ajax({
-				url: "department/edit_dept.php",
+				url: "election/edit_election.php",
 				type: "POST",
 				data: {edit_id:edit_id},
 				success:function(data){
 					$("#update_details").html(data);
-					$("#updateDeptModal").modal('show');
+					$("#updateElectionModal").modal('show');
 				}
 			});
 	});
 
-	//update department
-	$('#updateDeptButton').click(function(e){
+	//update election
+	$('updateElectionButton').click(function(e){
 		e.preventDefault();
 			$.ajax({
-				url: "department/update_department.php",
+				url: "election/update_election.php",
 				type: "POST",
-				data: $("#updateDeptForm").serialize(),
+				data: $("#updateElectionForm").serialize(),
 				success:function(data){
-					swal("Department Updated successfully!",{
+					swal("Election details updated successfully!",{
 						icon : "success",
 						buttons: {       			
 							confirm: {
@@ -419,53 +532,11 @@ if (!func::checkLoginState($dbh))
 						swal.close();
 						location.reload();
 					});
-					$("#updateDeptModal").modal('hide');
+					$("#updateElectionModal").modal('hide');
 				}
 			});
 	});
-	// Delete Department record
-	$(document).on('click','.delete_data',function(){
-			swal({
-				title: 'Are you sure?',
-				text: "You won't be able to revert this!",
-				icon: 'warning',
-				buttons:{
-					confirm: {
-						text : 'Yes, delete it!',
-						className : 'btn btn-success'
-					},
-					cancel: {
-						visible: true,
-						className: 'btn btn-danger'
-					}
-				}
-			}).then((Delete) => {
-				if (Delete) {
-					var edit_id = $(this).attr('id');
-					$.ajax({
-							url: "department/delete_department.php",
-							type: "POST",
-							data: {edit_id:edit_id}
-						});
-					swal({
-						title: 'Deleted!',
-						text: 'Department deleted successfully !',
-						icon: 'success',
-						buttons : {
-							confirm: {
-								className : 'btn btn-success'
-							}
-						},
-						}).then(function () {
-							swal.close();
-							location.reload();
-						});
-					} else {
-						swal.close();
-						location.reload();
-					}
-				});
-			});
+
 	});
 </script>
 </body>

@@ -1,3 +1,28 @@
+<?php 
+include_once("../config.php");
+include_once("../login/functions.php");
+if (!func::checkLoginState($dbh))
+	{
+		header("location:../login/login.php");
+	}
+	
+	else if ($_SESSION['userType'] != "student") {
+		header("Location:../../");	
+	}
+	// 	$result = $dbh->prepare( "SELECT * FROM USERS WHERE USER_ID = :user_id" );
+	// 	$result->bindParam(':user_id', $_SESSION['userid']);
+
+	// 	$result->setFetchMode(PDO::FETCH_ASSOC);
+	// 	$result->execute();
+	// 	while ($result2=$result->fetch()) {
+	// 		$firstName = ucfirst($result2['USER_FIRSTNAME']);
+	// 		$lastName = ucfirst($result2['USER_LASTNAME']);
+	// 		$email = $result2['USER_EMAIL'];
+	// 		$contact = $result2['USER_CONTACT'];
+	// 		$profile  = $result2['USER_PROFILE'];
+	// 	}
+	// $result =null;
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,7 +56,7 @@
 			<!-- Logo Header -->
 			<div class="logo-header">
 				
-				<a href="index.html" class="logo">
+				<a href="index.php" class="logo">
 					<!-- <img src="http://demo.themekita.com/azzara/livepreview/assets/img/logoazzara.svg" alt="navbar brand" class="navbar-brand"> -->
 				</a>
 				<p class="h2 text-white">Vote Now</p>
@@ -74,7 +99,7 @@
 									<div class="dropdown-divider"></div>
 									<a class="dropdown-item" href="#">My Profile</a>
 									<div class="dropdown-divider"></div>
-									<a class="dropdown-item" href="#">Logout</a>
+									<a class="dropdown-item" href="../login/logout.php">Logout</a>
 								</li>
 							</ul>
 						</li>
@@ -98,55 +123,28 @@
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="positions.html">
-								<i class="fas fas fa-user-tie"></i>
-								<p>Manage Positions</p>
-							</a>
-						</li>
-						<li class="nav-item">
-							<a href="candidates.html">
-								<i class="fas far fa-address-card"></i>
-								<p>Manage Candidates</p>
-							</a>
-						</li>
-						<li class="nav-item">
-							<a href="elections.html">
+							<a href="elections.php">
 								<i class="fas fa-edit"></i>
 								<p>Elections</p>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="polls.html">
-								<i class="fas fa-check"></i>
-								<p>Polls</p>
+							<a href="apply.php">
+								<i class="fas fa-edit"></i>
+								<p>Apply</p>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a data-toggle="collapse" href="#dept">
-								<i class="fas fas fa-school"></i>
-								<p>Departments & Programs</p>
-								<span class="caret"></span>
+							<a href="votes.php">
+								<i class="fas fa-check"></i>
+								<p>Vote</p>
 							</a>
-							<div class="collapse" id="dept">
-								<ul class="nav nav-collapse">
-									<li>
-										<a href="departments.html">
-											<span class="sub-item">Departments</span>
-										</a>
-									</li>
-									<li>
-										<a href="programs.html">
-											<span class="sub-item">Programs</span>
-										</a>
-									</li>
-								</ul>
-							</div>
-							<li class="nav-item">
-								<a href="students.html">
-									<i class="fas fa-id-card"></i>
-									<p>Students</p>
-								</a>
-							</li>
+						</li>
+						<li class="nav-item">
+							<a href="polls.php">
+								<i class="fas fa-check"></i>
+								<p>Polls</p>
+							</a>
 						</li>
 					</ul>
 				</div>
@@ -257,42 +255,9 @@
 <script src="../assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
 
 
-<!-- Datatables -->
-<script src="../assets/js/plugin/datatables/datatables.min.js"></script>
-
-<!-- jQuery Vector Maps -->
-<script src="../assets/js/plugin/jqvmap/jquery.vmap.min.js"></script>
-<script src="../assets/js/plugin/jqvmap/maps/jquery.vmap.world.js"></script>
-
-<!-- Google Maps Plugin -->
-<script src="../assets/js/plugin/gmaps/gmaps.js"></script>
-
-<!-- Dropzone -->
-<script src="../assets/js/plugin/dropzone/dropzone.min.js"></script>
-
-<!-- Fullcalendar -->
-<script src="../assets/js/plugin/fullcalendar/fullcalendar.min.js"></script>
-
-<!-- DateTimePicker -->
-<script src="../assets/js/plugin/datepicker/bootstrap-datetimepicker.min.js"></script>
-
-<!-- Bootstrap Tagsinput -->
-<script src="../assets/js/plugin/bootstrap-tagsinput/bootstrap-tagsinput.min.js"></script>
-
 <!-- Bootstrap Wizard -->
 <script src="../assets/js/plugin/bootstrap-wizard/bootstrapwizard.js"></script>
 
-<!-- jQuery Validation -->
-<script src="../assets/js/plugin/jquery.validate/jquery.validate.min.js"></script>
-
-<!-- Summernote -->
-<script src="../assets/js/plugin/summernote/summernote-bs4.min.js"></script>
-
-<!-- Select2 -->
-<script src="../assets/js/plugin/select2/select2.full.min.js"></script>
-
-<!-- Sweet Alert -->
-<script src="../assets/js/plugin/sweetalert/sweetalert.min.js"></script>
 
 <!-- Azzara JS -->
 <script src="../assets/js/ready.min.js"></script>

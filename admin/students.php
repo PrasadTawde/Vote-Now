@@ -27,7 +27,7 @@ if (!func::checkLoginState($dbh))
 <html lang="en">
 <head>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<title>Departments</title>
+	<title>Students</title>
 	<meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
 	<!-- <link rel="icon" href="http://demo.themekita.com/azzara/livepreview/assets/img/icon.ico" type="image/x-icon"/> -->
 
@@ -146,16 +146,16 @@ if (!func::checkLoginState($dbh))
 								<p>Polls</p>
 							</a>
 						</li>
-						<li class="nav-item active">
+						<li class="nav-item">
 							<a data-toggle="collapse" href="#dept">
 								<i class="fas fas fa-school"></i>
 								<p>Departments & Programs</p>
 								<span class="caret"></span>
 							</a>
-							<div class="collapse show" id="dept">
+							<div class="collapse" id="dept">
 								<ul class="nav nav-collapse">
-									<li class="active">
-										<a href="">
+									<li>
+										<a href="departments.php">
 											<span class="sub-item">Departments</span>
 										</a>
 									</li>
@@ -166,8 +166,8 @@ if (!func::checkLoginState($dbh))
 									</li>
 								</ul>
 							</div>
-							<li class="nav-item">
-								<a href="students.php">
+							<li class="nav-item active">
+								<a href="">
 									<i class="fas fa-id-card"></i>
 									<p>Students</p>
 								</a>
@@ -183,48 +183,116 @@ if (!func::checkLoginState($dbh))
 			<div class="content">
 				<div class="page-inner">
 					<div class="page-header">
-						<h4 class="page-title">Departments & Program</h4>
+						<h4 class="page-title">Students</h4>
 					</div>
-					<div class="col-md-12 ml-auto mr-auto">
+					<div class="col-md-12">
 						<div class="card">
 							<div class="card-header">
 								<div class="d-flex align-items-center">
-									<h4 class="card-title">Departments</h4>
-									<button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#addDeptModal">
+									<h4 class="page-title">Students</h4>
+									<button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#bulkUpload">
 										<i class="fa fa-plus"></i>
-										Add New Department
+										Bulk Upload
+									</button>
+									<button class="btn btn-primary btn-round ml-2" data-toggle="modal" data-target="#addStudentModal">
+										<i class="fa fa-plus"></i>
+										Add New Student
 									</button>
 								</div>
 							</div>
 							<div class="card-body">
-								<!-- Modal -->
-								<div class="modal fade" id="addDeptModal" tabindex="-1" role="dialog" aria-hidden="true">
+								<!-- Add Modal -->
+								<div class="modal fade" id="addStudentModal" tabindex="-1" role="dialog" aria-hidden="true">
 									<div class="modal-dialog" role="document">
 										<div class="modal-content">
 											<div class="modal-header no-bd">
 												<h5 class="modal-title">
 													<span class="fw-mediumbold">
-														New	Department
+														New	Student
 													</span>
 												</h5>
 												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 													<span aria-hidden="true">&times;</span>
 												</button>
 											</div>
-											<form action="" method="POST" id="deptForm">
+											<form action="" method="POST" id="studentForm">
 												<div class="modal-body">
 													<div class="row">
 														<div class="col-sm-12">
 															<div class="form-group form-group-default">
-																<label>Name</label>
-																<input id="deptName" name="deptName" type="text" class="form-control" placeholder="Enter department name">
-																<span class="text-danger" id="namedpt_error"></span>
+																<label>Student PR Number</label>
+																<input id="prNumber" name="prNumber" type="number" class="form-control" placeholder="Enter  student PR number.">
+																<span class="text-danger" id="error_pr"></span>
+															</div>
+															<div class="form-group form-group-default">
+																<label>First Name</label>
+																<input id="firstName" name="firstName" type="text" class="form-control" placeholder="Enter first name">
+																<span class="text-danger" id="error_fname"></span>
+															</div>
+															<div class="form-group form-group-default">
+																<label>Last Name</label>
+																<input id="lastName" name="lastName" type="text" class="form-control" placeholder="Enter last name">
+																<span class="text-danger" id="error_lname"></span>
+															</div>
+															<div class="form-group form-group-default">
+																<label>Email</label>
+																<input id="email" name="email" type="email" class="form-control" placeholder="Enter email address">
+																<span class="text-danger" id="error_email"></span>
+															</div>
+															<div class="form-group form-group-default">
+																<label>Contact No</label>
+																<input id="contact" name="contact" type="text" class="form-control" placeholder="Enter contact number">
+																<span class="text-danger" id="error_contact"></span>
+															</div>
+															<div class="form-group form-group-default">
+																<label>Select Department</label>
+																<select class="form-control" name="selectDept" id="selectDept">
+																	<option selected="" disabled="">---</option>
+																	<?php
+																		$stmt = $dbh->prepare( "SELECT * FROM DEPARTMENTS WHERE DEPARTMENT_NAME != 'all';");
+																		$stmt->setFetchMode(PDO::FETCH_ASSOC);
+																		$stmt->execute();
+																		while ($result=$stmt->fetch()) {
+																			$id = $result['DEPARTMENT_ID'];
+																			$name = $result['DEPARTMENT_NAME'];
+																	?>
+																	<option value="<?php echo $id; ?>"><?php echo $name; ?></option>
+																<?php } unset($stmt); unset($result); ?>
+																</select>
+																<span class="text-danger" id="error_dept"></span>
+															</div>
+															<div class="form-group form-group-default">
+																<label>Select Course</label>
+																<select class="form-control" name="selectCourse" id="selectCourse">
+																	<option selected="" disabled="">Select Department first</option>
+																</select>
+																<span class="text-danger" id="error_course"></span>
+															</div>
+															<div class="row">
+																<div class="col-md-6">
+																	<div class="form-group">
+																		<label>Joining Year</label>
+																		<div class="input-group">
+																			<input type="text" class="form-control" id="joinYear" name="joinYear" placeholder="Select Year">
+																		</div>
+																		<span class="text-danger" id="error_year"></span>
+																	</div>
+																</div>
+																<div class="col-md-6">
+																	<div class="form-group">
+																		<label>Leaving Year</label>
+																		<div class="input-group">
+																			<input type="text" class="form-control" id="leaveYear" name="leaveYear" placeholder="Select Year">
+																		</div>
+																		<span class="text-danger" id="error_leave"></span>
+																	</div>
+																</div>
 															</div>
 														</div>
 													</div>
 												</div>
 												<div class="modal-footer no-bd">
-													<input class="submit btn btn-primary" id="addDeptButton" type="submit" value="Add"/>
+													<input class="submit btn btn-primary" id="addStudentButton" type="submit" value="Add"/>
 													<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
 												</div>
 											</form>
@@ -233,36 +301,61 @@ if (!func::checkLoginState($dbh))
 								</div>
 
 								<!-- Update Modal -->
-								<div class="modal fade" id="updateDeptModal" tabindex="-1" role="dialog" aria-hidden="true">
+								<div class="modal fade" id="updateStudentModal" tabindex="-1" role="dialog" aria-hidden="true">
 									<div class="modal-dialog" role="document">
 										<div class="modal-content">
 											<div class="modal-header no-bd">
 												<h5 class="modal-title">
 													<span class="fw-mediumbold">
-														Update Department
+														Update Student Details
 													</span>
 												</h5>
 												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 													<span aria-hidden="true">&times;</span>
 												</button>
 											</div>
-											<form action="" method="POST" id="updateDeptForm">
+											<form action="" method="POST" id="updateStudentForm">
 												<div class="modal-body" id="update_details">
-													<!-- <div class="row">
-														<div class="col-sm-12">
-															<div class="form-group form-group-default">
-																<label>Name</label>
-																<input id="deptName" name="deptName" type="text" class="form-control" placeholder="Enter department name">
-																<span class="text-danger" id="namedpt_error"></span>
-															</div>
-														</div>
-													</div> -->
+													<!-- Updating form with jquery dynamic -->
 												</div>
 												<div class="modal-footer no-bd">
-													<input class="submit btn btn-primary" id="updateDeptButton" type="submit" value="Update"/>
+													<input class="submit btn btn-primary" id="updateStudentButton" type="submit" value="Update"/>
 													<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
 												</div>
 											</form>
+										</div>
+									</div>
+								</div>
+								<!-- Bulk Upload model -->
+								<div class="modal fade" id="bulkUpload" tabindex="-1" role="dialog" aria-hidden="true">
+									<div class="modal-dialog" role="document">
+										<div class="modal-content">
+											<div class="modal-header no-bd">
+												<h5 class="modal-title">
+													<span class="fw-mediumbold">
+														New	Candidate
+													</span>
+												</h5>
+												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+													<span aria-hidden="true">&times;</span>
+												</button>
+											</div>
+											<div class="modal-body">
+												<form>
+													<div class="row">
+														<div class="col-sm-12">
+															<div class="custom-file ">
+															  <input type="file" name="customFile" class="custom-file-input" id="customFile">
+															  <label class="custom-file-label" for="customFile">Choose Excel file</label>
+															</div>
+														</div>
+													</div>
+												</form>
+											</div>
+											<div class="modal-footer no-bd">
+												<button type="button" id="addRowButton" class="btn btn-primary">Upload</button>
+												<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+											</div>
 										</div>
 									</div>
 								</div>
@@ -271,34 +364,50 @@ if (!func::checkLoginState($dbh))
 									<table id="add-row" class="display table table-striped table-hover" >
 										<thead>
 											<tr>
-												<th>No.</th>
-												<th>Department Name</th>
+												<th>&emsp;&emsp;No&emsp;&emsp;</th>
+												<th>&emsp;&emsp;PR No&emsp;&emsp;</th>
+												<th>&emsp;&emsp;First Name&emsp;&emsp;</th>
+												<th>&emsp;&emsp;Last Name&emsp;&emsp;</th>
+												<th>&emsp;&emsp;Email&emsp;&emsp;</th>
+												<th>&emsp;&emsp;Contact No&emsp;&emsp;</th>
+												<th>&emsp;&emsp;Department&emsp;&emsp;</th>
+												<th>&emsp;&emsp;Course&emsp;&emsp;</th>
+												<th>&emsp;&emsp;Joining Year&emsp;&emsp;</th>
+												<th>&emsp;&emsp;Leaving Year&emsp;&emsp;</th>
 												<th style="width: 10%">Action</th>
 											</tr>
 										</thead>
-										<!-- <tfoot>
-											<tr>
-												<th>Name</th>
-												<th>Position</th>
-												<th>Office</th>
-												<th>Action</th>
-											</tr>
-										</tfoot> -->
 										<tbody>
 											<?php
-												$result = $dbh->prepare( "SELECT * FROM DEPARTMENTS WHERE DEPARTMENT_NAME != 'all';" );
-												$result->setFetchMode(PDO::FETCH_ASSOC);
-												$result->execute();
+												$stmt = $dbh->prepare( "SELECT STUDENT_ID, STUDENT_PRN, STUDENT_FIRSTNAME, STUDENT_LASTNAME, STUDENT_EMAIL, STUDENT_CONTACT, DEPARTMENTS.DEPARTMENT_NAME, COURSE_NAME, STUDENT_ACADEMIC_YEAR_START, STUDENT_ACADEMIC_YEAR_END FROM STUDENTS,COURSES INNER JOIN DEPARTMENTS ON COURSES.DEPARTMENT_ID = DEPARTMENTS.DEPARTMENT_ID WHERE DEPARTMENT_NAME != 'all';" );
+												$stmt->setFetchMode(PDO::FETCH_ASSOC);
+												$stmt->execute();
 												$srno = 0;
-												while ($result2=$result->fetch()) {
+												while ($result=$stmt->fetch()) {
 
 													$srno++;
-													$id = $result2['DEPARTMENT_ID'];
-													$name = $result2['DEPARTMENT_NAME'];
+													$id = $result['STUDENT_ID'];
+													$pr = $result['STUDENT_PRN'];
+													$first_name = ucfirst($result['STUDENT_FIRSTNAME']);
+													$last_name = ucfirst($result['STUDENT_LASTNAME']);
+													$email = $result['STUDENT_EMAIL'];
+													$contact = $result['STUDENT_CONTACT'];
+													$course_name = $result['COURSE_NAME'];
+													$dept_name = $result['DEPARTMENT_NAME'];
+													$join_year = $result['STUDENT_ACADEMIC_YEAR_START'];
+													$leave_year = $result['STUDENT_ACADEMIC_YEAR_END'];
 											?>
 											<tr>
 												<td><?php echo $srno; ?></td>
-												<td><?php echo $name; ?></td>
+												<td><?php echo $pr; ?></td>
+												<td><?php echo $first_name; ?></td>
+												<td><?php echo $last_name; ?></td>
+												<td><?php echo $email; ?></td>
+												<td><?php echo $contact; ?></td>
+												<td><?php echo $dept_name; ?></td>
+												<td><?php echo $course_name; ?></td>
+												<td><?php echo $join_year; ?></td>
+												<td><?php echo $leave_year; ?></td>
 												<td>
 													<div class="form-button-action">
 														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg edit_data" data-original-title="Edit" id="<?php echo $id;?>">
@@ -310,7 +419,7 @@ if (!func::checkLoginState($dbh))
 													</div>
 												</td>
 											</tr>
-										<?php } unset($result);?>
+										<?php } unset($result); unset($stmt);?>
 										</tbody>
 									</table>
 								</div>
@@ -332,9 +441,17 @@ if (!func::checkLoginState($dbh))
 <script src="../assets/js/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
 <script src="../assets/js/plugin/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
 
+<!-- Moment JS -->
+<script src="../assets/js/plugin/moment/moment.min.js"></script>
+
 <!-- jQuery Scrollbar -->
 <script src="../assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+
+<!-- Datatables -->
 <script src="../assets/js/plugin/datatables/datatables.min.js"></script>
+
+<!-- DateTimePicker -->
+<script src="../assets/js/plugin/datepicker/bootstrap-datetimepicker.min.js"></script>
 
 <!-- Select2 -->
 <script src="../assets/js/plugin/select2/select2.full.min.js"></script>
@@ -346,30 +463,62 @@ if (!func::checkLoginState($dbh))
 <script src="../assets/js/ready.min.js"></script>
 
 <script src="../assets/js/functions.js"></script>
-<script src="../assets/js/add_dept.js"></script>
-<script src="../assets/js/update_dept.js"></script>
-<script >
+<script src="../assets/js/add_student.js"></script>
+<script src="../assets/js/update_student.js"></script>
 
+<script >
 	$(document).ready(function() {
 
 		// Add Row
 		$('#add-row').DataTable({
 			"pageLength": 5,
 		});
+		$('#joinYear').datetimepicker({
+			format: 'YYYY',
+			viewMode: "years",
+		});
+		$('#leaveYear').datetimepicker({
+			format: 'YYYY',
+			viewMode: "years",
+		});
 
-		var action = '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
-
-	//Add Department
-	$(function(){
-		$('addDeptButton').click(function(e){
-			e.preventDeafult();
-				var deptName = $("#deptName").val();
+		//filling course select box
+		$('#selectDept').change(function(){
+			var s2 = document.getElementById ('selectDept');
+			var selectDept = s2.options [s2.selectedIndex] .value;
+			if(selectDept){
 				$.ajax({
-					url: 'department/add_department.php',
+					type:'POST',
+					url: 'student/get_course_select.php',
+					data: {selectDept:selectDept},
+					success:function (html) {
+						$('#selectCourse').html(html);
+					}
+				});
+			}else{
+				$('#selectCourse').html('<option value="">Something went wrong!</option>');
+			}
+		});
+
+	//Add Course
+	$(function(){
+		$('addStudentButton').click(function(e){
+			e.preventDeafult();
+				var prNumber = $('#prNumber').val();
+				var firstName = $('#firstName').val();
+				var lastName = $('#lastName').val();
+				var email = $('#email').val();
+				var contact = $('#contact').val();
+				var selectDept = $('#selectDept').val();
+				var selectCourse = $('#selectCourse').val();
+				var joinYear = $('#joinYear').val();
+				var leaveYear = $('#leaveYear').val();
+				$.ajax({
+					url: 'student/add_student.php',
 					type: 'POST',
-					data: {'deptName' : deptName},
+					data: {prNumber:prNumber, firstName:firstName, lastName:lastName, email:email, contact:contact, selectDept:selectDept, selectCourse:selectCourse, joinYear:joinYear, leaveYear:leaveYear},
 					success:function(data){
-						swal("Department Added Successfully !",{
+						swal("Student Added Successfully !",{
 							icon : "success",
 							button : {
 								confirm : {
@@ -380,35 +529,35 @@ if (!func::checkLoginState($dbh))
 							swal.close();
 							location.reload();
 						});
-						$('#addDeptModal').modal('hide');
+						$('#addStudentModal').modal('hide');
 					}
 				});
 		});
 	})
 
-	//edit department
+	//edit student
 	$(document).on('click','.edit_data',function(){
 		var edit_id = $(this).attr('id');
 		$.ajax({
-				url: "department/edit_dept.php",
+				url: "student/edit_student.php",
 				type: "POST",
 				data: {edit_id:edit_id},
 				success:function(data){
 					$("#update_details").html(data);
-					$("#updateDeptModal").modal('show');
+					$("#updateStudentModal").modal('show');
 				}
 			});
 	});
 
-	//update department
-	$('#updateDeptButton').click(function(e){
+	//update student
+	$('updateStudentButton').click(function(e){
 		e.preventDefault();
 			$.ajax({
-				url: "department/update_department.php",
+				url: "student/update_student.php",
 				type: "POST",
-				data: $("#updateDeptForm").serialize(),
+				data: $("#updateStudentForm").serialize(),
 				success:function(data){
-					swal("Department Updated successfully!",{
+					swal("Student record updated successfully!",{
 						icon : "success",
 						buttons: {       			
 							confirm: {
@@ -419,11 +568,11 @@ if (!func::checkLoginState($dbh))
 						swal.close();
 						location.reload();
 					});
-					$("#updateDeptModal").modal('hide');
+					$("#updateStudentModal").modal('hide');
 				}
 			});
 	});
-	// Delete Department record
+	// Delete student record
 	$(document).on('click','.delete_data',function(){
 			swal({
 				title: 'Are you sure?',
@@ -443,13 +592,13 @@ if (!func::checkLoginState($dbh))
 				if (Delete) {
 					var edit_id = $(this).attr('id');
 					$.ajax({
-							url: "department/delete_department.php",
+							url: "student/delete_student.php",
 							type: "POST",
 							data: {edit_id:edit_id}
 						});
 					swal({
 						title: 'Deleted!',
-						text: 'Department deleted successfully !',
+						text: 'Student record deleted successfully !',
 						icon: 'success',
 						buttons : {
 							confirm: {
@@ -466,6 +615,7 @@ if (!func::checkLoginState($dbh))
 					}
 				});
 			});
+
 	});
 </script>
 </body>
