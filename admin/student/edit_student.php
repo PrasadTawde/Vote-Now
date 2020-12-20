@@ -34,7 +34,7 @@
 		<div class="col-sm-12 collapse">
 			<div class="form-group form-group-default">
 				<label>ID</label>
-				<input id="id" type="text" class="form-control" name="id" value="<?php echo $id; ?>">
+				<input id="studentid" type="text" class="form-control" name="studentid" value="<?php echo $id; ?>">
 			</div>
 		</div>
 		<div class="form-group form-group-default">

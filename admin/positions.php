@@ -9,27 +9,25 @@ if (!func::checkLoginState($dbh))
 	else if ($_SESSION['userType'] != "admin") {
 		header("Location:../../");	
 	}
-	// 	$result = $dbh->prepare( "SELECT * FROM USERS WHERE USER_ID = :user_id" );
-	// 	$result->bindParam(':user_id', $_SESSION['userid']);
+		$result = $dbh->prepare( "SELECT * FROM USERS WHERE USER_ID = :user_id" );
+		$result->bindParam(':user_id', $_SESSION['userid']);
 
-	// 	$result->setFetchMode(PDO::FETCH_ASSOC);
-	// 	$result->execute();
-	// 	while ($result2=$result->fetch()) {
-	// 		$firstName = ucfirst($result2['USER_FIRSTNAME']);
-	// 		$lastName = ucfirst($result2['USER_LASTNAME']);
-	// 		$email = $result2['USER_EMAIL'];
-	// 		$contact = $result2['USER_CONTACT'];
-	// 		$profile  = $result2['USER_PROFILE'];
-	// 	}
-	// $result =null;
+		$result->setFetchMode(PDO::FETCH_ASSOC);
+		$result->execute();
+		while ($result2=$result->fetch()) {
+			$first_name = ucfirst($result2['USER_FIRSTNAME']);
+			$last_name = ucfirst($result2['USER_LASTNAME']);
+			$email = $result2['USER_EMAIL'];
+			$contact = $result2['USER_CONTACT'];
+			$profile  = $result2['USER_PROFILE'];
+		}
+	$result =null;
 ?>
 <html lang="en">
 <head>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<title>Home</title>
 	<meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
-	<!-- <link rel="icon" href="http://demo.themekita.com/azzara/livepreview/assets/img/icon.ico" type="image/x-icon"/> -->
-
 	<!-- Fonts and icons -->
 	<script src="../assets/js/plugin/webfont/webfont.min.js"></script>
 	<script>
@@ -46,8 +44,6 @@ if (!func::checkLoginState($dbh))
 	<link rel="stylesheet" href="../assets/css/bootstrap.min.css">
 	<link rel="stylesheet" href="../assets/css/azzara.min.css">
 
-<!-- 	CSS Just for demo purpose, don't include it in your project
-	<link rel="stylesheet" href="../assets/css/demo.css"> -->
 </head>
 <body>
 	<div class="wrapper">
@@ -56,7 +52,6 @@ if (!func::checkLoginState($dbh))
 			<div class="logo-header">
 				
 				<a href="index.php" class="logo">
-					<!-- <img src="http://demo.themekita.com/azzara/livepreview/assets/img/logoazzara.svg" alt="navbar brand" class="navbar-brand"> -->
 				</a>
 				<p class="h2 text-white">Vote Now</p>
 				<button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,24 +76,24 @@ if (!func::checkLoginState($dbh))
 						<li class="nav-item dropdown hidden-caret">
 							<a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false">
 								<div class="avatar-sm">
-									<img src="../assets/img/profile.jpg" alt="..." class="avatar-img rounded-circle">
+									<img src="data:image/jpeg;base64,<?php echo base64_encode($profile); ?>" alt="image" class="avatar-img rounded-circle">
 								</div>
 							</a>
 							<ul class="dropdown-menu dropdown-user animated fadeIn">
 								<li>
 									<div class="user-box">
-										<div class="avatar-lg"><img src="../assets/img/profile.jpg" alt="image profile" class="avatar-img rounded"></div>
+										<div class="avatar-lg"><img src="data:image/jpeg;base64,<?php echo base64_encode($profile); ?>" alt="image profile" class="avatar-img rounded"></div>
 										<div class="u-text">
-											<h4>Barry</h4>
-											<p class="text-muted">hello@example.com</p>
+											<h4><?php echo $first_name." ". $last_name ?></h4>
+											<p class="text-muted"><?php echo $email; ?></p>
 										</div>
 									</div>
 								</li>
 								<li>
 									<div class="dropdown-divider"></div>
-									<a class="dropdown-item" href="#">My Profile</a>
+									<a class="dropdown-item" href="profile/profile.php">My Profile</a>
 									<div class="dropdown-divider"></div>
-									<a class="dropdown-item" href="#">Logout</a>
+									<a class="dropdown-item" href="../login/logout.php">Logout</a>
 								</li>
 							</ul>
 						</li>
@@ -165,6 +160,12 @@ if (!func::checkLoginState($dbh))
 									</li>
 								</ul>
 							</div>
+							<li class="nav-item">
+								<a href="students.php">
+									<i class="fas fa-id-card"></i>
+									<p>Students</p>
+								</a>
+							</li>
 						</li>
 					</ul>
 				</div>

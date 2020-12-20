@@ -28,7 +28,7 @@ if (!func::checkLoginState($dbh))
 <html lang="en">
 <head>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<title>Elections</title>
+	<title>Apply</title>
 	<meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
 	<!-- <link rel="icon" href="http://demo.themekita.com/azzara/livepreview/assets/img/icon.ico" type="image/x-icon"/> -->
 
@@ -58,7 +58,6 @@ if (!func::checkLoginState($dbh))
 			<div class="logo-header">
 				
 				<a href="index.php" class="logo">
-					<!-- <img src="http://demo.themekita.com/azzara/livepreview/assets/img/logoazzara.svg" alt="navbar brand" class="navbar-brand"> -->
 				</a>
 				<p class="h2 text-white">Vote Now</p>
 				<button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -89,18 +88,18 @@ if (!func::checkLoginState($dbh))
 							<ul class="dropdown-menu dropdown-user animated fadeIn">
 								<li>
 									<div class="user-box">
-										<div class="avatar-lg"><img src="../assets/img/profile.jpg" alt="image profile" class="avatar-img rounded"></div>
+										<div class="avatar-lg"><img src="data:image/jpeg;base64,<?php echo base64_encode($profile); ?>" alt="image profile" class="avatar-img rounded"></div>
 										<div class="u-text">
-											<h4>Barry</h4>
-											<p class="text-muted">hello@example.com</p>
+											<h4><?php echo $first_name." ". $last_name ?></h4>
+											<p class="text-muted"><?php echo $email; ?></p>
 										</div>
 									</div>
 								</li>
 								<li>
 									<div class="dropdown-divider"></div>
-									<a class="dropdown-item" href="#">My Profile</a>
+									<a class="dropdown-item" href="profile/profile.php">My Profile</a>
 									<div class="dropdown-divider"></div>
-									<a class="dropdown-item" href="#">Logout</a>
+									<a class="dropdown-item" href="../login/logout.php">Logout</a>
 								</li>
 							</ul>
 						</li>
@@ -124,26 +123,26 @@ if (!func::checkLoginState($dbh))
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="positions.php">
-								<i class="fas fas fa-user-tie"></i>
-								<p>Manage Positions</p>
-							</a>
-						</li>
-						<li class="nav-item">
-							<a href="candidates.php">
-								<i class="fas far fa-address-card"></i>
-								<p>Manage Candidates</p>
+							<a href="elections.php">
+								<i class="fas fa-user-clock"></i>
+								<p>Elections</p>
 							</a>
 						</li>
 						<li class="nav-item active">
 							<a href="">
 								<i class="fas fa-edit"></i>
-								<p>Elections</p>
+								<p>Apply</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="votes.php">
+								<i class="fas fa-door-closed"></i>
+								<p>Vote</p>
 							</a>
 						</li>
 						<li class="nav-item">
 							<a href="polls.php">
-								<i class="fas fa-check"></i>
+								<i class="fas fa-chart-bar"></i>
 								<p>Polls</p>
 							</a>
 						</li>
@@ -157,13 +156,13 @@ if (!func::checkLoginState($dbh))
 			<div class="content">
 				<div class="page-inner">
 					<div class="page-header">
-						<h4 class="page-title">Elections</h4>
+						<h4 class="page-title">Apply</h4>
 					</div>
 					<div class="col-md-10 ml-auto mr-auto">
 						<div class="card">
 							<div class="card-header">
 								<div class="d-flex align-items-center">
-									<h4 class="page-title">Elections</h4>
+									<h4 class="page-title">Apply</h4>
 								</div>
 							</div>
 							<div class="card-body">

@@ -1,9 +1,10 @@
 <?php 
-	include_once ("../config.php");
+	include_once ("../../config.php");
 
 	date_default_timezone_set("Asia/Kolkata");
 	$current_date = date("d/m/yy");
 	$current_time = date("h:i a");
+	
 
 
 	if (isset($_POST['view_data'])) 
@@ -48,15 +49,33 @@
 			<div class="form-group form-group-default">
 				<center><label for="">Candidates Name</label></center>
 				<!-- while loop to print name -->
+				<table class="table table-bordered table-head-bg-info table-bordered-bd-info mt-4">
+					<thead>
+						<tr>
+							<th scope="col">#</th>
+							<th scope="col">Name</th>
+							<th scope="col">Total</th>
+						</tr>
+					</thead>
+					<tbody>
 				<?php 
-					$stmt = $dbh->prepare( "SELECT ELECTIONS.ELECTION_ID, STUDENT_FIRSTNAME, STUDENT_LASTNAME, COURSES.COURSE_NAME, DEPARTMENTS.DEPARTMENT_NAME FROM ELECTIONS
+					
+
+					$stmt = $dbh->prepare( "SELECT VOTE_ID, ELECTIONS.ELECTION_ID, STUDENT_FIRSTNAME, STUDENT_LASTNAME, COURSES.COURSE_NAME, DEPARTMENTS.DEPARTMENT_NAME, NO_OF_VOTES FROM ELECTIONS
 						INNER JOIN CANDIDATES ON ELECTIONS.ELECTION_ID = CANDIDATES.ELECTION_ID
 						INNER JOIN STUDENTS ON CANDIDATES.STUDENT_ID = STUDENTS.STUDENT_ID
 						INNER JOIN COURSES ON STUDENTS.COURSE_ID = COURSES.COURSE_ID
-						INNER JOIN DEPARTMENTS ON COURSES.DEPARTMENT_ID = DEPARTMENTS.DEPARTMENT_ID WHERE ELECTIONS.ELECTION_ID = :view_id;" );
+                        LEFT JOIN VOTES ON ELECTIONS.ELECTION_ID = VOTES.ELECTION_ID
+						INNER JOIN DEPARTMENTS ON COURSES.DEPARTMENT_ID = DEPARTMENTS.DEPARTMENT_ID WHERE ELECTIONS.ELECTION_ID = :view_id GROUP BY VOTE_ID, VOTES.CANDIDATE_ID;" );
 					$stmt->bindParam(':view_id', $view_id);
 					$stmt->setFetchMode(PDO::FETCH_ASSOC);
+					
 					$stmt->execute();
+					$query = $dbh->prepare( "SELECT COUNT(*) FROM VOTES WHERE ELECTION_ID = :view_id;" );
+						$query->bindParam(':view_id', $view_id);
+						$query->setFetchMode(PDO::FETCH_ASSOC);
+						$query->execute();
+						$count = $query->fetchColumn();
 					$no =0;
 					while ($result=$stmt->fetch()) {
 						$no++;
@@ -64,19 +83,21 @@
 						$student_last = ucfirst($result['STUDENT_LASTNAME']);
 						$student_dept = ucwords($result['DEPARTMENT_NAME']);
 						$student_course = ucwords($result['COURSE_NAME']);
+						$no_of_votes = $result['NO_OF_VOTES'];
+						
+
 						?>
-							<blockquote>
-								<span class="h4">
-									<?php echo $no.") ".$student_first." ".$student_last; ?>
-									<br>
-									<small>
-										-<?php echo $student_course.", ".$student_dept ?>
-									</small>
-								</span>
-							</blockquote>
+							<tr>
+								<td><?php echo $no ?></td>
+								<td><?php echo $student_first." ".$student_last ?></td>
+								<td><?php echo $count ?></td>
+							</tr>
 						<?php
 					}
 				 ?>
+				 	
+				 </tbody>
+				</table>
 			</div>
 		</div>
 	</div>
@@ -86,12 +107,6 @@
 	$time1 = DateTime::createFromFormat('h:i a', $current_time);
 	$time2 = DateTime::createFromFormat('h:i a', $start_time);
 	$time3 = DateTime::createFromFormat('h:i a', $end_time);
-	if ($current_date == $date && ($time1 > $time2 && $time1 < $time3))
-	{
-	   	?>
-		<input class="submit btn btn-primary" id="updateElectionButton" type="submit" value="Vote" onclick="window.location.href='votes.php'" />
-		<?php
-	}
  ?>
 	<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
 </div>

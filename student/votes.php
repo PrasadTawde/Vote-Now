@@ -9,19 +9,25 @@ if (!func::checkLoginState($dbh))
 	else if ($_SESSION['userType'] != "student") {
 		header("Location:../../");	
 	}
-	// 	$result = $dbh->prepare( "SELECT * FROM USERS WHERE USER_ID = :user_id" );
-	// 	$result->bindParam(':user_id', $_SESSION['userid']);
+	$result = $dbh->prepare( "SELECT * FROM STUDENTS WHERE STUDENT_ID = :user_id" );
+		$result->bindParam(':user_id', $_SESSION['userid']);
 
-	// 	$result->setFetchMode(PDO::FETCH_ASSOC);
-	// 	$result->execute();
-	// 	while ($result2=$result->fetch()) {
-	// 		$firstName = ucfirst($result2['USER_FIRSTNAME']);
-	// 		$lastName = ucfirst($result2['USER_LASTNAME']);
-	// 		$email = $result2['USER_EMAIL'];
-	// 		$contact = $result2['USER_CONTACT'];
-	// 		$profile  = $result2['USER_PROFILE'];
-	// 	}
-	// $result =null;
+		$result->setFetchMode(PDO::FETCH_ASSOC);
+		$result->execute();
+		while ($result2=$result->fetch()) {
+			$first_name = ucfirst($result2['STUDENT_FIRSTNAME']);
+			$last_name = ucfirst($result2['STUDENT_LASTNAME']);
+			$email = $result2['STUDENT_EMAIL'];
+			$contact = $result2['STUDENT_CONTACT'];
+			$profile  = $result2['STUDENT_PROFILE'];
+			$course = $result2['COURSE_ID'];
+		}
+	$result =null;
+
+	date_default_timezone_set("Asia/Kolkata");
+	$current_date = date("d/m/yy");
+	$current_time = date("h:i a");
+	$session_user_id = $_SESSION['userid'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -82,24 +88,24 @@ if (!func::checkLoginState($dbh))
 						<li class="nav-item dropdown hidden-caret">
 							<a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false">
 								<div class="avatar-sm">
-									<img src="../assets/img/profile.jpg" alt="..." class="avatar-img rounded-circle">
+									<img src="data:image/jpeg;base64,<?php echo base64_encode($profile);?>" alt="profile" class="avatar-img rounded-circle">
 								</div>
 							</a>
 							<ul class="dropdown-menu dropdown-user animated fadeIn">
 								<li>
 									<div class="user-box">
-										<div class="avatar-lg"><img src="../assets/img/profile.jpg" alt="image profile" class="avatar-img rounded"></div>
+										<div class="avatar-lg"><img src="data:image/jpeg;base64,<?php echo base64_encode($profile);?>" alt="profile" class="avatar-img rounded"></div>
 										<div class="u-text">
-											<h4>Barry</h4>
-											<p class="text-muted">hello@example.com</p>
+											<h4><?php echo $first_name." ". $last_name ?></h4>
+											<p class="text-muted"><?php echo $email; ?></p>
 										</div>
 									</div>
 								</li>
 								<li>
 									<div class="dropdown-divider"></div>
-									<a class="dropdown-item" href="#">My Profile</a>
+									<a class="dropdown-item" href="profile/profile.php">My Profile</a>
 									<div class="dropdown-divider"></div>
-									<a class="dropdown-item" href="#">Logout</a>
+									<a class="dropdown-item" href="../login/logout.php">Logout</a>
 								</li>
 							</ul>
 						</li>
@@ -123,32 +129,26 @@ if (!func::checkLoginState($dbh))
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="positions.php">
-								<i class="fas fas fa-user-tie"></i>
-								<p>Manage Positions</p>
-							</a>
-						</li>
-						<li class="nav-item">
-							<a href="candidates.php">
-								<i class="fas far fa-address-card"></i>
-								<p>Manage Candidates</p>
-							</a>
-						</li>
-						<li class="nav-item">
 							<a href="elections.php">
-								<i class="fas fa-edit"></i>
+								<i class="fas fa-user-clock"></i>
 								<p>Elections</p>
 							</a>
 						</li>
+						<li class="nav-item">
+							<a href="apply.php">
+								<i class="fas fa-edit"></i>
+								<p>Apply</p>
+							</a>
+						</li>
 						<li class="nav-item active">
-							<a href="votes.php">
-								<i class="fas fa-check"></i>
+							<a href="">
+								<i class="fas fa-door-closed"></i>
 								<p>Vote</p>
 							</a>
 						</li>
 						<li class="nav-item">
 							<a href="polls.php">
-								<i class="fas fa-check"></i>
+								<i class="fas fa-chart-bar"></i>
 								<p>Polls</p>
 							</a>
 						</li>
@@ -162,37 +162,16 @@ if (!func::checkLoginState($dbh))
 			<div class="content">
 				<div class="page-inner">
 					<div class="page-header">
-						<h4 class="page-title">Elections</h4>
+						<h4 class="page-title">Votes</h4>
 					</div>
 					<div class="col-md-10 ml-auto mr-auto">
 						<div class="card">
 							<div class="card-header">
 								<div class="d-flex align-items-center">
-									<h4 class="page-title">Elections</h4>
+									<h4 class="page-title">Votes</h4>
 								</div>
 							</div>
 							<div class="card-body">
-								<!-- Update Modal -->
-								<div class="modal fade" id="updateElectionModal" tabindex="-1" role="dialog" aria-hidden="true">
-									<div class="modal-dialog" role="document">
-										<div class="modal-content">
-											<div class="modal-header no-bd">
-												<h5 class="modal-title">
-													<span class="fw-mediumbold">
-														Election details
-													</span>
-												</h5>
-												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-													<span aria-hidden="true">&times;</span>
-												</button>
-											</div>
-											<div id="update_details">
-												<!-- Updating form with jquery dynamic -->
-											</div>
-										</div>
-									</div>
-								</div>
-
 								<div class="table-responsive">
 									<table id="add-row" class="display table table-striped table-hover" >
 										<thead>
@@ -201,18 +180,19 @@ if (!func::checkLoginState($dbh))
 												<th>Position</th>
 												<th>Department</th>
 												<th>Program</th>
-												<th>Date</th>
-												<th>Starting Time</th>
-												<th>Ending Time</th>
-												<th style="width: 10%">Action</th>
+												<th style="width: 10%">Vote</th>
 											</tr>
 										</thead>
 										<tbody>
 											<?php
-												$stmt = $dbh->prepare( "SELECT ELECTION_ID, ELECTIONS.POSITION_ID, ELECTION_DATE, ELECTION_START_TIME, ELECTION_END_TIME, POSITION_NAME, DEPARTMENTS.DEPARTMENT_NAME, COURSES.COURSE_NAME FROM ELECTIONS
+												$stmt = $dbh->prepare( "SELECT ELECTIONS.ELECTION_ID, ELECTIONS.POSITION_ID, ELECTION_DATE, ELECTION_START_TIME, ELECTION_END_TIME, POSITION_NAME, DEPARTMENTS.DEPARTMENT_NAME, COURSES.COURSE_NAME, VOTES.STUDENT_ID
+													FROM ELECTIONS
 													INNER JOIN POSITIONS ON ELECTIONS.POSITION_ID = POSITIONS.POSITION_ID
 													INNER JOIN COURSES ON ELECTIONS.COURSE_ID = COURSES.COURSE_ID
-													INNER JOIN DEPARTMENTS ON COURSES.DEPARTMENT_ID = DEPARTMENTS.DEPARTMENT_ID;" );
+													INNER JOIN DEPARTMENTS ON COURSES.DEPARTMENT_ID = DEPARTMENTS.DEPARTMENT_ID
+													LEFT JOIN VOTES ON ELECTIONS.ELECTION_ID = VOTES.ELECTION_ID
+													WHERE ELECTIONS.COURSE_ID = :course_id OR COURSES.COURSE_NAME = 'all' AND STUDENT_ID IS NULL GROUP BY ELECTION_ID" );
+												$stmt->bindParam(':course_id', $course);
 												$stmt->setFetchMode(PDO::FETCH_ASSOC);
 												$stmt->execute();
 												$srno = 0;
@@ -226,27 +206,50 @@ if (!func::checkLoginState($dbh))
 													$date = $result['ELECTION_DATE'];
 													$start_time = $result['ELECTION_START_TIME'];
 													$end_time = $result['ELECTION_END_TIME'];
-											?>
-											<tr>
-												<td><?php echo $srno; ?></td>
-												<td><?php echo $position_name; ?></td>
-												<td><?php echo $dept_name; ?></td>
-												<td><?php echo $course_name; ?></td>
-												<td><?php echo $date; ?></td>
-												<td><?php echo $start_time; ?></td>
-												<td><?php echo $end_time; ?></td>
-												<td>
-													<div class="form-button-action">
-														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg view_data" data-original-title="View Details" id="<?php echo $id;?>">
-															<i class="fa fa-check-square"></i>
-														</button>
-													</div>
-												</td>
-											</tr>
-										<?php } unset($result); unset($stmt);?>
+													$date = $result['ELECTION_DATE'];
+													$start_time = $result['ELECTION_START_TIME'];
+													$end_time = $result['ELECTION_END_TIME'];
+													$time1 = DateTime::createFromFormat('h:i a', $current_time);
+													$time2 = DateTime::createFromFormat('h:i a', $start_time);
+													$time3 = DateTime::createFromFormat('h:i a', $end_time);
+													if ($current_date == $date && ($time1 > $time2 && $time1 < $time3)) {
+														?>
+															<tr>
+																<td><?php echo $srno; ?></td>
+																<td><?php echo $position_name; ?></td>
+																<td><?php echo $dept_name; ?></td>
+																<td><?php echo $course_name; ?></td>
+																<td>
+																	<div class="form-button-action">
+																		<button class="btn btn-primary btn-round get_data" id="<?php echo $id;?>">Vote</button>
+																	</div>
+																</td>
+															</tr>
+														<?php $id = NULL;
+														}
+													} unset($result); unset($stmt);?>
 										</tbody>
 									</table>
 								</div>
+							</div>
+							<div class="card-action">
+								<form action="" method="POST" id="vote_form">
+									<div id="vote_data">
+										
+									</div>
+									<span class="text-danger" id="error_msg"></span><br>
+									<span class="h4 text-danger">Once vote is casted you cannot revert it back, So choose wisely.</span>
+									<div class="card-header">
+										<div class="d-flex align-items-center">
+											<button class="btn btn-success btn-round ml-auto" id="updateVoteButton">
+												Vote
+											</button>
+											<button class="btn btn-danger btn-round ml-2" onclick="window.location.reload();">
+												Cancel
+											</button>
+										</div>
+									</div>
+								</form>
 							</div>
 						</div>
 					</div>
@@ -281,43 +284,75 @@ if (!func::checkLoginState($dbh))
 <!-- Azzara JS -->
 <script src="../assets/js/ready.min.js"></script>
 
-<script >
-	$('#dateSelect').datetimepicker({
-			format: 'DD/MM/YYYY',
-			daysOfWeekDisabled: [0],
-			minDate: moment(),
-	});
-	$('#timeFrom').datetimepicker({
-		format: 'h:mm A', 
-		// disabledTimeIntervals: [
-  //     		[moment().hour(0).minutes(0), moment().hour(8).minutes(30)],
-  //     		[moment().hour(20).minutes(30), moment().hour(24).minutes(0)]
-  //     	]
-	});
-	$('#timeTo').datetimepicker({
-		format: 'h:mm A', 
-	});
+<script src="../assets/js/functions.js"></script>
+<script src="../assets/js/add_vote.js"></script>
 
+<script >
 	$(document).ready(function() {
 
 		// Add Row
 		$('#add-row').DataTable({
-			"pageLength": 5,
+			"pageLength": 3,
 		});
-
-	//edit election
-	$(document).on('click','.view_data',function(){
-		var view_data = $(this).attr('id');
-		$.ajax({
-				url: "view_elections.php",
-				type: "POST",
-				data: {view_data:view_data},
-				success:function(data){
-					$("#update_details").html(data);
-					$("#updateElectionModal").modal('show');
-				}
-			});
-	});
+		//get voting data
+		$(document).on('click','.get_data',function(){
+			var get_data = $(this).attr('id');
+			$.ajax({
+					url: "vote/get_data.php",
+					type: "POST",
+					data: {get_data:get_data},
+					success:function(data){
+						$('#vote_data').html(data);
+					}
+				});
+		});
+		//give vote
+/*		$('#updateVoteButton').click(function(e){
+			e.preventDefault();
+				$.ajax({
+					url: "vote/add_vote.php",
+					type: "POST",
+					data: $("#vote_form").serialize(),
+					success:function(data){
+						swal("Your Vote Successfully Casted!",{
+							icon : "success",
+							buttons: {       			
+								confirm: {
+									className : 'btn btn-success'
+								}
+							},
+						}).then(function () {
+							swal.close();
+							location.reload();
+						});
+					}
+				});
+		});*/
+	$(function(){
+		$('updateVoteButton').click(function(e){
+			e.preventDeafult();
+				var vote_check = $("#vote_check").val();
+				var studenId = $("#studenId").val();
+				$.ajax({
+					url: 'course/add_course.php',
+					type: 'POST',
+					data: {vote_check:vote_check, studenId:studenId},
+					success:function(data){
+						swal("Program Added Successfully !",{
+							icon : "success",
+							button : {
+								confirm : {
+									className : 'btn btn-success'
+								}
+							},
+						}).then(function(){
+							swal.close();
+							location.reload();
+						});
+					}
+				});
+		});
+	})
 
 	});
 </script>

@@ -1,3 +1,6 @@
+<?php 
+include_once ("../config.php");
+ ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,9 +24,6 @@
 	<!-- CSS Files -->
 	<link rel="stylesheet" href="../assets/css/bootstrap.min.css">
 	<link rel="stylesheet" href="../assets/css/azzara.min.css">
-
-	<!-- Core js Files -->
-	<script src="../assets/js/core/jquery.3.2.1.min.js"></script>
 
 </head>
 <body class="login">
@@ -74,58 +74,143 @@
 		<div class="container container-signup animated fadeIn">
 			<h3 class="text-center">Sign Up</h3>
 			<div class="login-form">
-				<div class="form-group form-floating-label">
-					<input  id="fullname" name="fullname" type="text" class="form-control input-border-bottom" required>
-					<label for="fullname" class="placeholder">Fullname</label>
-				</div>
-				<div class="form-group form-floating-label">
-					<select class="form-control input-border-bottom" id="selectDepartment" required>
-						<option value="" >&nbsp;</option>
-						<option>Goa Bussiness School</option>
-					</select>
-					<label for="selectDepartment" class="placeholder">Select Department</label>
-				</div>
-				<div class="form-group form-floating-label">
-					<select class="form-control input-border-bottom" id="selectProgram" required>
-						<option value="" >&nbsp;</option>
-						<option>MCA</option>
-						<option>MA</option>
-						<option>MCOM</option>
-						<option>MBA</option>
-					</select>
-					<label for="selectProgram" class="placeholder">Select Programme</label>
-				</div>
-				<div class="form-group form-floating-label">
-					<input  id="email" name="email" type="email" class="form-control input-border-bottom" required>
-					<label for="email" class="placeholder">Email</label>
-				</div>
-				<div class="form-group form-floating-label">
-					<input  id="passwordsignin" name="passwordsignin" type="password" class="form-control input-border-bottom" required>
-					<label for="passwordsignin" class="placeholder">Password</label>
-					<div class="show-password">
-						<i class="flaticon-interface"></i>
+				<form action="signup.php" method="POST" id="signupID">
+					<div class="form-group form-floating-label">
+						<input  id="prNumber" name="prNumber" type="number" class="form-control input-border-bottom" required>
+						<label for="prNumber" class="placeholder">PR Number</label>
+						<span class="text-danger" id="error_pr"></span>
 					</div>
-				</div>
-				<div class="form-group form-floating-label">
-					<input  id="confirmpassword" name="confirmpassword" type="password" class="form-control input-border-bottom" required>
-					<label for="confirmpassword" class="placeholder">Confirm Password</label>
-					<div class="show-password">
-						<i class="flaticon-interface"></i>
+					<div class="form-group form-floating-label">
+						<input  id="firstName" name="firstName" type="text" class="form-control input-border-bottom" required>
+						<label for="firstName" class="placeholder">First Name</label>
+						<span class="text-danger" id="error_fname"></span>
 					</div>
-				</div>
-				<div class="form-action">
-					<a href="#" id="show-signin" class="btn btn-danger btn-rounded btn-login mr-3">Cancel</a>
-					<a href="#" class="btn btn-primary btn-rounded btn-login">Sign Up</a>
-				</div>
+					<div class="form-group form-floating-label">
+						<input  id="lastName" name="lastName" type="text" class="form-control input-border-bottom" required>
+						<label for="lastName" class="placeholder">Last Name</label>
+						<span class="text-danger" id="error_lname"></span>
+					</div>
+					<div class="form-group form-floating-label">
+						<select class="form-control input-border-bottom" name="selectDepartment" id="selectDepartment" required>
+							<option value="" >&nbsp;</option>
+							<?php
+								$stmt = $dbh->prepare( "SELECT * FROM DEPARTMENTS WHERE DEPARTMENT_NAME != 'all';");
+								$stmt->setFetchMode(PDO::FETCH_ASSOC);
+								$stmt->execute();
+								while ($result=$stmt->fetch()) {
+									$id = $result['DEPARTMENT_ID'];
+									$name = $result['DEPARTMENT_NAME'];
+							?>
+							<option value="<?php echo $id; ?>"><?php echo $name; ?></option>
+						<?php } unset($stmt); unset($result); ?>
+						</select>
+						<label for="selectDepartment" class="placeholder">Select Department</label>
+						<span class="text-danger" id="error_dept"></span>
+					</div>
+					<div class="form-group form-floating-label">
+						<select class="form-control input-border-bottom" id="selectCourse" name="selectCourse" required>
+							<option value="" >&nbsp;</option>
+							<option>Select Depaartment first.</option>
+						</select>
+						<label for="selectCourse" class="placeholder">Select Programme</label>
+						<span class="text-danger" id="error_course"></span>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label>Joining Year</label>
+								<div class="input-group">
+									<input type="text" class="form-control" id="joinYear" name="joinYear" placeholder="Select Year">
+								</div>
+								<span class="text-danger" id="error_year"></span>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label>Leaving Year</label>
+								<div class="input-group">
+									<input type="text" class="form-control" id="leaveYear" name="leaveYear" placeholder="Select Year">
+								</div>
+								<span class="text-danger" id="error_leave"></span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group form-floating-label">
+						<input  id="email" name="email" type="email" class="form-control input-border-bottom" required>
+						<label for="email" class="placeholder">Email</label>
+						<span class="text-danger" id="error_email"></span>
+					</div>
+					<div class="form-group form-floating-label">
+						<input  id="contact" name="contact" type="number" class="form-control input-border-bottom" required>
+						<label for="contact" class="placeholder">Contact</label>
+						<span class="text-danger" id="error_contact"></span>
+					</div>
+					<div class="form-group form-floating-label">
+						<input  id="password" name="password" type="password" class="form-control input-border-bottom" required>
+						<label for="password" class="placeholder">Password</label>
+						<div class="show-password">
+							<i class="flaticon-interface"></i>
+						</div>
+						<span class="text-danger" id="error_password"></span>
+					</div>
+					<div class="form-group form-floating-label">
+						<input  id="confirmpassword" name="confirmpassword" type="password" class="form-control input-border-bottom" required>
+						<label for="confirmpassword" class="placeholder">Confirm Password</label>
+						<div class="show-password">
+							<i class="flaticon-interface"></i>
+						</div>
+						<span class="text-danger" id="error_passconfirm"></span>
+					</div>
+					<div class="form-action">
+						<a href="#" id="show-signin" class="btn btn-danger btn-rounded btn-login mr-3">Cancel</a>
+						<input id="signinBtn" type="submit" name="submit" class="btn btn-primary btn-rounded btn-login" value="Sign Up">
+					</div>
+				</form>
 			</div>
 		</div>
 	</div>
-	<script src="../assets/js/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+
+	<!--   Core JS Files   -->
+	<script src="../assets/js/core/jquery.3.2.1.min.js"></script>
 	<script src="../assets/js/core/popper.min.js"></script>
 	<script src="../assets/js/core/bootstrap.min.js"></script>
+	<script src="../assets/js/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+	<script src="../assets/js/plugin/moment/moment.min.js"></script>
+	<script src="../assets/js/plugin/datepicker/bootstrap-datetimepicker.min.js"></script>
+	<script src="../assets/js/plugin/sweetalert/sweetalert.min.js"></script>
 	<script src="../assets/js/ready.js"></script>
 	<script src="../assets/js/functions.js"></script>
 	<script src="../assets/js/signin.js"></script>
-	
+	<script src="../assets/js/signup.js"></script>
+	<script>
+		$(document).ready(function() {
+			$('#joinYear').datetimepicker({
+				format: 'YYYY',
+				viewMode: "years",
+			});
+			$('#leaveYear').datetimepicker({
+				format: 'YYYY',
+				viewMode: "years",
+			});
+
+			//filling course select box
+			$('#selectDepartment').change(function(){
+				var s2 = document.getElementById ('selectDepartment');
+				var selectDept = s2.options [s2.selectedIndex] .value;
+				if(selectDept){
+					$.ajax({
+						type:'POST',
+						url: '../admin/student/get_course_select.php',
+						data: {selectDept:selectDept},
+						success:function (html) {
+							$('#selectCourse').html(html);
+						}
+					});
+				}else{
+					$('#selectCourse').html('<option value="">Something went wrong!</option>');
+				}
+			});
+		});
+	</script>
 </body>
 </html>

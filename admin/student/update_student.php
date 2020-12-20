@@ -5,8 +5,8 @@ $report=array();
 
 	if(isset($_POST["submit"])){
 		$upload_ok=1;
-		if(isset($_POST['id']) && !empty($_POST['id'])){
-			$student_id = filter_var(htmlspecialchars(strtolower(trim($_POST['id']))),FILTER_SANITIZE_STRING);
+		if(isset($_POST['studentid']) && !empty($_POST['studentid'])){
+			$student_id = filter_var(htmlspecialchars(strtolower(trim($_POST['studentid']))),FILTER_SANITIZE_STRING);
 		}
 		else{
 			$upload_ok=0;

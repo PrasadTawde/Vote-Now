@@ -9,10 +9,12 @@
 	if (isset($_POST['view_data'])) 
 	{
 		$view_id = $_POST['view_data'];
-		$stmt = $dbh->prepare( "SELECT ELECTION_ID, ELECTIONS.POSITION_ID, ELECTION_DATE, ELECTION_START_TIME, ELECTION_END_TIME, POSITION_NAME, DEPARTMENTS.DEPARTMENT_NAME, COURSES.DEPARTMENT_ID, COURSES.COURSE_NAME, COURSES.COURSE_ID FROM ELECTIONS
+		$stmt = $dbh->prepare( "SELECT ELECTIONS.ELECTION_ID, ELECTIONS.POSITION_ID, ELECTION_DATE, ELECTION_START_TIME, ELECTION_END_TIME, POSITION_NAME, DEPARTMENTS.DEPARTMENT_NAME, COURSES.DEPARTMENT_ID, COURSES.COURSE_NAME, COURSES.COURSE_ID, STUDENT_FIRSTNAME, STUDENT_LASTNAME FROM ELECTIONS
 				INNER JOIN POSITIONS ON ELECTIONS.POSITION_ID = POSITIONS.POSITION_ID
 				INNER JOIN COURSES ON ELECTIONS.COURSE_ID = COURSES.COURSE_ID
-				INNER JOIN DEPARTMENTS ON COURSES.DEPARTMENT_ID = DEPARTMENTS.DEPARTMENT_ID WHERE ELECTION_ID = :view_id;" );
+				INNER JOIN DEPARTMENTS ON COURSES.DEPARTMENT_ID = DEPARTMENTS.DEPARTMENT_ID 
+				INNER JOIN CANDIDATES ON ELECTIONS.ELECTION_ID = CANDIDATES.ELECTION_ID
+    			INNER JOIN STUDENTS ON CANDIDATES.STUDENT_ID = STUDENTS.STUDENT_ID WHERE ELECTIONS.ELECTION_ID = :view_id;" );
 		$stmt->bindParam(':view_id', $view_id);
 
 		$stmt->setFetchMode(PDO::FETCH_ASSOC);
@@ -44,39 +46,16 @@
 				<b>Date :</b>  <span><?php echo $date; ?></span><br><br>
 				<b>From :</b>  <span><?php echo $start_time; ?></span><br><br>
 				<b>Till :</b>  <span><?php echo $end_time; ?></span><br><br>
+				
 			</div>
 			<div class="form-group form-group-default">
-				<center><label for="">Candidates Name</label></center>
-				<!-- while loop to print name -->
-				<?php 
-					$stmt = $dbh->prepare( "SELECT ELECTIONS.ELECTION_ID, STUDENT_FIRSTNAME, STUDENT_LASTNAME, COURSES.COURSE_NAME, DEPARTMENTS.DEPARTMENT_NAME FROM ELECTIONS
-						INNER JOIN CANDIDATES ON ELECTIONS.ELECTION_ID = CANDIDATES.ELECTION_ID
-						INNER JOIN STUDENTS ON CANDIDATES.STUDENT_ID = STUDENTS.STUDENT_ID
-						INNER JOIN COURSES ON STUDENTS.COURSE_ID = COURSES.COURSE_ID
-						INNER JOIN DEPARTMENTS ON COURSES.DEPARTMENT_ID = DEPARTMENTS.DEPARTMENT_ID WHERE ELECTIONS.ELECTION_ID = :view_id;" );
-					$stmt->bindParam(':view_id', $view_id);
-					$stmt->setFetchMode(PDO::FETCH_ASSOC);
-					$stmt->execute();
-					$no =0;
-					while ($result=$stmt->fetch()) {
-						$no++;
-						$student_first = ucfirst($result['STUDENT_FIRSTNAME']);
-						$student_last = ucfirst($result['STUDENT_LASTNAME']);
-						$student_dept = ucwords($result['DEPARTMENT_NAME']);
-						$student_course = ucwords($result['COURSE_NAME']);
-						?>
-							<blockquote>
-								<span class="h4">
-									<?php echo $no.") ".$student_first." ".$student_last; ?>
-									<br>
-									<small>
-										-<?php echo $student_course.", ".$student_dept ?>
-									</small>
-								</span>
-							</blockquote>
-						<?php
-					}
-				 ?>
+				<b>Position :</b>  <span><?php echo $position_name; ?></span><br><br>
+				<b>Department :</b>  <span><?php echo $dept_name; ?></span><br><br>
+				<b>Program :</b>  <span><?php echo $course_name; ?></span><br><br>
+				<b>Date :</b>  <span><?php echo $date; ?></span><br><br>
+				<b>From :</b>  <span><?php echo $start_time; ?></span><br><br>
+				<b>Till :</b>  <span><?php echo $end_time; ?></span><br><br>
+				
 			</div>
 		</div>
 	</div>
@@ -89,7 +68,7 @@
 	if ($current_date == $date && ($time1 > $time2 && $time1 < $time3))
 	{
 	   	?>
-		<input class="submit btn btn-primary" id="updateElectionButton" type="submit" value="Vote" onclick="window.location.href='votes.php'" />
+		<input class="submit btn btn-primary" id="updateElectionButton" type="submit" value="Vote"/>
 		<?php
 	}
  ?>

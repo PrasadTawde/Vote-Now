@@ -9,19 +9,19 @@ if (!func::checkLoginState($dbh))
 	else if ($_SESSION['userType'] != "admin") {
 		header("Location:../../");	
 	}
-	// 	$result = $dbh->prepare( "SELECT * FROM USERS WHERE USER_ID = :user_id" );
-	// 	$result->bindParam(':user_id', $_SESSION['userid']);
+		$result = $dbh->prepare( "SELECT * FROM USERS WHERE USER_ID = :user_id" );
+		$result->bindParam(':user_id', $_SESSION['userid']);
 
-	// 	$result->setFetchMode(PDO::FETCH_ASSOC);
-	// 	$result->execute();
-	// 	while ($result2=$result->fetch()) {
-	// 		$firstName = ucfirst($result2['USER_FIRSTNAME']);
-	// 		$lastName = ucfirst($result2['USER_LASTNAME']);
-	// 		$email = $result2['USER_EMAIL'];
-	// 		$contact = $result2['USER_CONTACT'];
-	// 		$profile  = $result2['USER_PROFILE'];
-	// 	}
-	// $result =null;
+		$result->setFetchMode(PDO::FETCH_ASSOC);
+		$result->execute();
+		while ($result2=$result->fetch()) {
+			$first_name = ucfirst($result2['USER_FIRSTNAME']);
+			$last_name = ucfirst($result2['USER_LASTNAME']);
+			$email = $result2['USER_EMAIL'];
+			$contact = $result2['USER_CONTACT'];
+			$profile  = $result2['USER_PROFILE'];
+		}
+	$result =null;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -46,9 +46,10 @@ if (!func::checkLoginState($dbh))
 	<!-- CSS Files -->
 	<link rel="stylesheet" href="../assets/css/bootstrap.min.css">
 	<link rel="stylesheet" href="../assets/css/azzara.min.css">
-
-<!-- 	CSS Just for demo purpose, don't include it in your project
-	<link rel="stylesheet" href="../assets/css/demo.css"> -->
+	<!--   Core JS Files   -->
+	<script src="../assets/js/core/jquery.3.2.1.min.js"></script>
+	<script src="../assets/js/core/popper.min.js"></script>
+	<script src="../assets/js/core/bootstrap.min.js"></script>
 </head>
 <body>
 	<div class="wrapper">
@@ -57,7 +58,6 @@ if (!func::checkLoginState($dbh))
 			<div class="logo-header">
 				
 				<a href="index.php" class="logo">
-					<!-- <img src="http://demo.themekita.com/azzara/livepreview/assets/img/logoazzara.svg" alt="navbar brand" class="navbar-brand"> -->
 				</a>
 				<p class="h2 text-white">Vote Now</p>
 				<button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,24 +82,24 @@ if (!func::checkLoginState($dbh))
 						<li class="nav-item dropdown hidden-caret">
 							<a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false">
 								<div class="avatar-sm">
-									<img src="../assets/img/profile.jpg" alt="..." class="avatar-img rounded-circle">
+									<img src="data:image/jpeg;base64,<?php echo base64_encode($profile); ?>" alt="profile" class="avatar-img rounded-circle">
 								</div>
 							</a>
 							<ul class="dropdown-menu dropdown-user animated fadeIn">
 								<li>
 									<div class="user-box">
-										<div class="avatar-lg"><img src="../assets/img/profile.jpg" alt="image profile" class="avatar-img rounded"></div>
+										<div class="avatar-lg"><img src="data:image/jpeg;base64,<?php echo base64_encode($profile); ?>" alt="profile" class="avatar-img rounded"></div>
 										<div class="u-text">
-											<h4>Barry</h4>
-											<p class="text-muted">hello@example.com</p>
+											<h4><?php echo $first_name." ". $last_name ?></h4>
+											<p class="text-muted"><?php echo $email; ?></p>
 										</div>
 									</div>
 								</li>
 								<li>
 									<div class="dropdown-divider"></div>
-									<a class="dropdown-item" href="#">My Profile</a>
+									<a class="dropdown-item" href="profile/profile.php">My Profile</a>
 									<div class="dropdown-divider"></div>
-									<a class="dropdown-item" href="#">Logout</a>
+									<a class="dropdown-item" href="../login/logout.php">Logout</a>
 								</li>
 							</ul>
 						</li>
@@ -326,39 +326,47 @@ if (!func::checkLoginState($dbh))
 										</div>
 									</div>
 								</div>
-								<!-- Bulk Upload model -->
-								<div class="modal fade" id="bulkUpload" tabindex="-1" role="dialog" aria-hidden="true">
-									<div class="modal-dialog" role="document">
-										<div class="modal-content">
-											<div class="modal-header no-bd">
-												<h5 class="modal-title">
-													<span class="fw-mediumbold">
-														New	Candidate
-													</span>
-												</h5>
-												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-													<span aria-hidden="true">&times;</span>
-												</button>
-											</div>
-											<div class="modal-body">
-												<form>
+								<!-- upload Excel -->
+									<div class="modal fade" id="bulkUpload" tabindex="-1" role="dialog" aria-hidden="true">
+										<div class="modal-dialog" role="document">
+											<div class="modal-content">
+												<div class="modal-header no-bd">
+													<h5 class="modal-title">
+														<span class="fw-mediumbold">
+														New</span> 
+														<span class="fw-light">
+															Student Data
+														</span>
+													</h5>
+													<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+														<span aria-hidden="true">&times;</span>
+													</button>
+												</div>
+												<form action="excel_data_upload.php" method="POST" enctype="multipart/form-data" id="excel_upload">
+												<div class="modal-body">
 													<div class="row">
-														<div class="col-sm-12">
+														<div class="col-md-12">
 															<div class="custom-file ">
 															  <input type="file" name="customFile" class="custom-file-input" id="customFile">
-															  <label class="custom-file-label" for="customFile">Choose Excel file</label>
+															  <label class="custom-file-label" for="customFile">Choose file</label>
 															</div>
 														</div>
+														<script>
+												            $('#customFile').on('change',function(){
+												                var fileName = $(this).val();
+												                $(this).next('.custom-file-label').html(fileName);
+												            });
+												        </script>
 													</div>
+												</div>
+												<div class="modal-footer no-bd">
+													<button type="submit" id="uploadexcelbtn" class="btn btn-primary">Upload</button>
+													<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+												</div>
 												</form>
-											</div>
-											<div class="modal-footer no-bd">
-												<button type="button" id="addRowButton" class="btn btn-primary">Upload</button>
-												<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
 											</div>
 										</div>
 									</div>
-								</div>
 
 								<div class="table-responsive">
 									<table id="add-row" class="display table table-striped table-hover" >
@@ -379,7 +387,10 @@ if (!func::checkLoginState($dbh))
 										</thead>
 										<tbody>
 											<?php
-												$stmt = $dbh->prepare( "SELECT STUDENT_ID, STUDENT_PRN, STUDENT_FIRSTNAME, STUDENT_LASTNAME, STUDENT_EMAIL, STUDENT_CONTACT, DEPARTMENTS.DEPARTMENT_NAME, COURSE_NAME, STUDENT_ACADEMIC_YEAR_START, STUDENT_ACADEMIC_YEAR_END FROM STUDENTS,COURSES INNER JOIN DEPARTMENTS ON COURSES.DEPARTMENT_ID = DEPARTMENTS.DEPARTMENT_ID WHERE DEPARTMENT_NAME != 'all';" );
+												$stmt = $dbh->prepare( "SELECT STUDENT_ID, STUDENT_PRN, STUDENT_FIRSTNAME, STUDENT_LASTNAME, STUDENT_EMAIL, STUDENT_CONTACT, DEPARTMENTS.DEPARTMENT_NAME, COURSE_NAME, STUDENT_ACADEMIC_YEAR_START, STUDENT_ACADEMIC_YEAR_END 
+													FROM STUDENTS
+													INNER JOIN COURSES ON STUDENTS.COURSE_ID = COURSES.COURSE_ID
+													INNER JOIN DEPARTMENTS ON COURSES.DEPARTMENT_ID = DEPARTMENTS.DEPARTMENT_ID WHERE DEPARTMENT_NAME != 'all';" );
 												$stmt->setFetchMode(PDO::FETCH_ASSOC);
 												$stmt->execute();
 												$srno = 0;
@@ -432,11 +443,6 @@ if (!func::checkLoginState($dbh))
 		</div>
 	</div>
 </div>
-<!--   Core JS Files   -->
-<script src="../assets/js/core/jquery.3.2.1.min.js"></script>
-<script src="../assets/js/core/popper.min.js"></script>
-<script src="../assets/js/core/bootstrap.min.js"></script>
-
 <!-- jQuery UI -->
 <script src="../assets/js/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
 <script src="../assets/js/plugin/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
@@ -468,6 +474,9 @@ if (!func::checkLoginState($dbh))
 
 <script >
 	$(document).ready(function() {
+		if ( window.history.replaceState ) {
+	        window.history.replaceState( null, null, window.location.href );
+	    	}
 
 		// Add Row
 		$('#add-row').DataTable({
@@ -615,6 +624,33 @@ if (!func::checkLoginState($dbh))
 					}
 				});
 			});
+
+			$('#excel_upload').on("submit", function(e){  
+                e.preventDefault(); //form will not submitted  
+                $.ajax({  
+                     url:"student/excel_data_upload.php",  
+                     method:"POST",  
+                     data:new FormData(this),  
+                     contentType:false,          // The content type used when sending data to the server.  
+                     cache:false,                // To unable request pages to be cached  
+                     processData:false,          // To send DOMDocument or non processed data file it is set to false  
+                     success: function(data){ 
+                          if(data=='Error1')  
+                          {  
+                               alert("Invalid File");  
+                          }  
+                          else if(data == "Error2")  
+                          {  
+                               alert("Please Select File");  
+                          }  
+                          else  
+                          {  
+                               alert("Data Uploaded successfully !");
+                               location.reload();
+                          }  
+                     }  
+                })  
+           });
 
 	});
 </script>

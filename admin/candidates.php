@@ -1,11 +1,34 @@
+<?php 
+include_once("../config.php");
+include_once("../login/functions.php");
+if (!func::checkLoginState($dbh))
+	{
+		header("location:../login/login.php");
+	}
+	
+	else if ($_SESSION['userType'] != "admin") {
+		header("Location:../../");	
+	}
+		$result = $dbh->prepare( "SELECT * FROM USERS WHERE USER_ID = :user_id" );
+		$result->bindParam(':user_id', $_SESSION['userid']);
+
+		$result->setFetchMode(PDO::FETCH_ASSOC);
+		$result->execute();
+		while ($result2=$result->fetch()) {
+			$first_name = ucfirst($result2['USER_FIRSTNAME']);
+			$last_name = ucfirst($result2['USER_LASTNAME']);
+			$email = $result2['USER_EMAIL'];
+			$contact = $result2['USER_CONTACT'];
+			$profile  = $result2['USER_PROFILE'];
+		}
+	$result =null;
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<title>Candidates</title>
 	<meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
-	<!-- <link rel="icon" href="http://demo.themekita.com/azzara/livepreview/assets/img/icon.ico" type="image/x-icon"/> -->
-
 	<!-- Fonts and icons -->
 	<script src="../assets/js/plugin/webfont/webfont.min.js"></script>
 	<script>
@@ -21,9 +44,6 @@
 	<!-- CSS Files -->
 	<link rel="stylesheet" href="../assets/css/bootstrap.min.css">
 	<link rel="stylesheet" href="../assets/css/azzara.min.css">
-
-<!-- 	CSS Just for demo purpose, don't include it in your project
-	<link rel="stylesheet" href="../assets/css/demo.css"> -->
 </head>
 <body>
 	<div class="wrapper">
@@ -32,7 +52,6 @@
 			<div class="logo-header">
 				
 				<a href="index.php" class="logo">
-					<!-- <img src="http://demo.themekita.com/azzara/livepreview/assets/img/logoazzara.svg" alt="navbar brand" class="navbar-brand"> -->
 				</a>
 				<p class="h2 text-white">Vote Now</p>
 				<button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,24 +76,24 @@
 						<li class="nav-item dropdown hidden-caret">
 							<a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false">
 								<div class="avatar-sm">
-									<img src="../assets/img/profile.jpg" alt="..." class="avatar-img rounded-circle">
+									<img src="data:image/jpeg;base64,<?php echo base64_encode($profile); ?>" alt="profile" class="avatar-img rounded-circle">
 								</div>
 							</a>
 							<ul class="dropdown-menu dropdown-user animated fadeIn">
 								<li>
 									<div class="user-box">
-										<div class="avatar-lg"><img src="../assets/img/profile.jpg" alt="image profile" class="avatar-img rounded"></div>
+										<div class="avatar-lg"><img src=".data:image/jpeg;base64,<?php echo base64_encode($profile); ?>" alt="profile" class="avatar-img rounded"></div>
 										<div class="u-text">
-											<h4>Barry</h4>
-											<p class="text-muted">hello@example.com</p>
+											<h4><?php echo $first_name." ". $last_name ?></h4>
+											<p class="text-muted"><?php echo $email; ?></p>
 										</div>
 									</div>
 								</li>
 								<li>
 									<div class="dropdown-divider"></div>
-									<a class="dropdown-item" href="#">My Profile</a>
+									<a class="dropdown-item" href="profile/profile.php">My Profile</a>
 									<div class="dropdown-divider"></div>
-									<a class="dropdown-item" href="#">Logout</a>
+									<a class="dropdown-item" href="../login/logout.php">Logout</a>
 								</li>
 							</ul>
 						</li>
@@ -86,7 +105,6 @@
 
 		<!-- Sidebar -->
 		<div class="sidebar">
-			
 			<div class="sidebar-background"></div>
 			<div class="sidebar-wrapper scrollbar-inner">
 				<div class="sidebar-content">
@@ -165,70 +183,31 @@
 							<div class="card-header">
 								<div class="d-flex align-items-center">
 									<h4 class="page-title">Candidates</h4>
-									<button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#addRowModal">
-										<i class="fa fa-plus"></i>
-										Add New Candidate
-									</button>
 								</div>
 							</div>
 							<div class="card-body">
-								<!-- Modal -->
-								<div class="modal fade" id="addRowModal" tabindex="-1" role="dialog" aria-hidden="true">
+								<!-- Update Modal -->
+								<div class="modal fade" id="updateApplicationModal" tabindex="-1" role="dialog" aria-hidden="true">
 									<div class="modal-dialog" role="document">
 										<div class="modal-content">
 											<div class="modal-header no-bd">
 												<h5 class="modal-title">
 													<span class="fw-mediumbold">
-														New	Candidate
+														Apply for Election
 													</span>
 												</h5>
 												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 													<span aria-hidden="true">&times;</span>
 												</button>
 											</div>
-											<div class="modal-body">
-												<form>
-													<div class="row">
-														<div class="col-sm-12">
-															<div class="form-group form-group-default">
-																<label>Name</label>
-																<input id="addName" type="text" class="form-control" placeholder="Enter Candidates name">
-															</div>
-															<div class="form-group form-group-default">
-																<label>Select Position</label>
-																<select class="form-control" id="formGroupDefaultSelect">
-																	<option selected="" disabled="">--</option>
-																	<option>General Secretary</option>
-																	<option>Secretary</option>
-																	<option>Class Representative</option>
-																</select>
-															</div>
-															<div class="form-group form-group-default">
-																<label>Select Department</label>
-																<select class="form-control" id="formGroupDefaultSelect">
-																	<option selected="" disabled="">--</option>
-																	<option>All</option>
-																	<option>Goa Bussiness School</option>
-																	<option>Philosophy</option>
-																	<option>Biotechnology</option>
-																</select>
-															</div>
-															<div class="form-group form-group-default">
-																<label>Select Programme</label>
-																<select class="form-control" id="formGroupDefaultSelect">
-																	<option selected="" disabled="">--</option>
-																	<option>All</option>
-																	<option>MCA</option>
-																</select>
-															</div>
-														</div>
-													</div>
-												</form>
-											</div>
-											<div class="modal-footer no-bd">
-												<button type="button" id="addRowButton" class="btn btn-primary">Add</button>
-												<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-											</div>
+											<form action="" method="POST" id="updateApplicationForm">
+												<div class="modal-body" id="update_details">
+													<!-- Updating form with jquery dynamic -->
+												</div>
+												<div class="modal-footer no-bd">
+													<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+												</div>
+											</form>
 										</div>
 									</div>
 								</div>
@@ -237,62 +216,59 @@
 									<table id="add-row" class="display table table-striped table-hover" >
 										<thead>
 											<tr>
-												<th>Candidate Name</th>
+												<th>No.</th>
 												<th>Position</th>
 												<th>Department</th>
-												<th>Programme</th>
+												<th>Program</th>
+												<th>Date</th>
+												<th>Starting Time</th>
+												<th>Ending Time</th>
 												<th style="width: 10%">Action</th>
 											</tr>
 										</thead>
 										<tbody>
+											<?php
+												$stmt = $dbh->prepare( "SELECT CANDIDATES.CANDIDATE_ID, POSITIONS.POSITION_NAME, DEPARTMENTS.DEPARTMENT_NAME, COURSES.COURSE_NAME, ELECTIONS.ELECTION_ID, ELECTIONS.ELECTION_DATE, ELECTIONS.ELECTION_START_TIME, ELECTIONS.ELECTION_END_TIME, STUDENTS.STUDENT_FIRSTNAME, STUDENTS.STUDENT_LASTNAME 
+													FROM CANDIDATES 
+													INNER JOIN STUDENTS ON CANDIDATES.STUDENT_ID =STUDENTS.STUDENT_ID
+													INNER JOIN ELECTIONS ON CANDIDATES.ELECTION_ID = ELECTIONS.ELECTION_ID
+													INNER JOIN POSITIONS ON ELECTIONS.POSITION_ID = POSITIONS.POSITION_ID
+													INNER JOIN COURSES ON ELECTIONS.COURSE_ID = COURSES.COURSE_ID
+													INNER JOIN DEPARTMENTS ON COURSES.DEPARTMENT_ID = DEPARTMENTS.DEPARTMENT_ID");
+												$stmt->setFetchMode(PDO::FETCH_ASSOC);
+												$stmt->execute();
+												$srno = 0;
+												while ($result=$stmt->fetch()) {
+
+													$srno++;
+													$id = $result['CANDIDATE_ID'];
+													$position_name = ucfirst($result['POSITION_NAME']);
+													$dept_name = ucfirst($result['DEPARTMENT_NAME']);
+													$course_name = ucfirst($result['COURSE_NAME']);
+													$date = $result['ELECTION_DATE'];
+													$start_time = $result['ELECTION_START_TIME'];
+													$end_time = $result['ELECTION_END_TIME'];
+											?>
 											<tr>
-												<td>Barry Allen</td>
-												<td>General Secretary</td>
-												<td>--</td>
-												<td>--</td>
+												<td><?php echo $srno; ?></td>
+												<td><?php echo $position_name; ?></td>
+												<td><?php echo $dept_name; ?></td>
+												<td><?php echo $course_name; ?></td>
+												<td><?php echo $date; ?></td>
+												<td><?php echo $start_time; ?></td>
+												<td><?php echo $end_time; ?></td>
 												<td>
 													<div class="form-button-action">
-														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit">
-															<i class="fa fa-edit"></i>
+														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg edit_data" id="<?php echo $id;?>">
+															<i class="fa fa-check-square"></i>
 														</button>
-														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Delete">
+														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger delete_data" data-original-title="Delete" id="<?php echo $id;?>">
 															<i class="fa fa-times"></i>
 														</button>
 													</div>
 												</td>
 											</tr>
-											<tr>
-												<td>Joey J</td>
-												<td>Secretary</td>
-												<td>--</td>
-												<td>--</td>
-												<td>
-													<div class="form-button-action">
-														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit">
-															<i class="fa fa-edit"></i>
-														</button>
-														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Delete">
-															<i class="fa fa-times"></i>
-														</button>
-													</div>
-												</td>
-											</tr>
-											<tr>
-												<td>Anna Frenk</td>
-												<td>Class Representative</td>
-												<td>Goa Bussiness School</td>
-												<td>MCA</td>
-												<td>
-													<div class="form-button-action">
-														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit">
-															<i class="fa fa-edit"></i>
-														</button>
-														<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Delete">
-															<i class="fa fa-times"></i>
-														</button>
-													</div>
-												</td>
-											</tr>
+										<?php } unset($result); unset($stmt);?>
 										</tbody>
 									</table>
 								</div>
@@ -333,6 +309,8 @@
 
 <!-- Azzara JS -->
 <script src="../assets/js/ready.min.js"></script>
+<script src="../assets/js/functions.js"></script>
+
 <script >
 	$(document).ready(function() {
 
@@ -341,18 +319,64 @@
 			"pageLength": 5,
 		});
 
-		var action = '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
+	//edit election
+	$(document).on('click','.edit_data',function(){
+		var edit_data = $(this).attr('id');
+		$.ajax({
+				url: "apply/edit_application.php",
+				type: "POST",
+				data: {edit_data:edit_data},
+				success:function(data){
+					$("#update_details").html(data);
+					$("#updateApplicationModal").modal('show');
+				}
+			});
+	});
 
-		$('#addRowButton').click(function() {
-			$('#add-row').dataTable().fnAddData([
-				$("#addName").val(),
-				$("#addPosition").val(),
-				$("#addOffice").val(),
-				action
-				]);
-			$('#addRowModal').modal('hide');
+	// Delete Department record
+	$(document).on('click','.delete_data',function(){
+			swal({
+				title: 'Are you sure?',
+				text: "You won't be able to revert this!",
+				icon: 'warning',
+				buttons:{
+					confirm: {
+						text : 'Yes, delete it!',
+						className : 'btn btn-success'
+					},
+					cancel: {
+						visible: true,
+						className: 'btn btn-danger'
+					}
+				}
+			}).then((Delete) => {
+				if (Delete) {
+					var candidate_id = $(this).attr('id');
+					$.ajax({
+							url: "apply/delete_application.php",
+							type: "POST",
+							data: {candidate_id:candidate_id}
+						});
+					swal({
+						title: 'Deleted!',
+						text: 'Department deleted successfully !',
+						icon: 'success',
+						buttons : {
+							confirm: {
+								className : 'btn btn-success'
+							}
+						},
+						}).then(function () {
+							swal.close();
+							location.reload();
+						});
+					} else {
+						swal.close();
+						location.reload();
+					}
+				});
+			});
 
-		});
 	});
 </script>
 </body>

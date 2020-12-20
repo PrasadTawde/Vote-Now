@@ -45,8 +45,7 @@
 
 				if ($row['USER_ID'] > 0)
 				{
-					//if(password_verify($password, $row['USER_PASSWORD']))
-					if($password== $row['USER_PASSWORD'])
+					if(password_verify($password, $row['USER_PASSWORD']))
 					{
 						func::createRecord($dbh, $row['USER_EMAIL'], $row['USER_ID'], 'admin');
 						// header("location:../index.php");
@@ -73,11 +72,9 @@
 
 				if ($row['STUDENT_ID'] > 0)
 				{
-					//if(password_verify($password, $row['USER_PASSWORD']))
-					if($password== $row['STUDENT_PASSWORD'])
+					if(password_verify($password, $row['STUDENT_PASSWORD']))
 					{
 						func::createRecord($dbh, $row['STUDENT_EMAIL'], $row['STUDENT_ID'], 'student');
-						// header("location:../index.php");
 						$report["success"]="You are Logged in successfully";
 					}
 					else

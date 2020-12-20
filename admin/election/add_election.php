@@ -41,7 +41,7 @@ $report=array();
 			$report["error_time_from"]="Select valid time.";
 		}
 		if(isset($_POST['timeTo']) && !empty($_POST['timeTo'])){
-			$timeTo = filter_var(htmlspecialchars(strtolower(trim($_POST['timeTo'])),FILTER_SANITIZE_STRING);
+			$timeTo = filter_var(htmlspecialchars(strtolower(trim($_POST['timeTo']))),FILTER_SANITIZE_STRING);
 		}
 		else{
 			$upload_ok=0;

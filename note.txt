@@ -1,0 +1,2 @@
+view election page
+change query for multiple candidates

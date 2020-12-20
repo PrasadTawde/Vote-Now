@@ -1,0 +1,40 @@
+users
+	user_id 
+	user_first_name
+	user_last_name
+	user_email
+	user_password
+	user_type
+
+
+departments
+	department_id
+	department_name
+
+programs/course
+	program_id
+	department_id
+	program_name
+
+positions
+	position_id
+	position_name
+	department_id
+	program_id
+
+candidates
+	candidate_id
+	user_id
+	position_id
+
+elections
+	election_id
+	position_id
+	date
+	time
+
+votes
+	vote_id
+	position_id
+	candidate_id
+	no_of_votes
